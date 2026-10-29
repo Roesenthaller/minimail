@@ -2710,9 +2710,21 @@ label:
         shown: Le libellé est maintenant visible.
 
 list:
+    columns:
+        attachments: 'Pièces jointes'
+        date: Date
+        sender: 'Expéditeur'
+        sort_by: 'Trier par %column%'
+        subject: Objet
     sort:
+        attachments: 'Plus de pièces jointes d’abord'
+        attachments_asc: 'Moins de pièces jointes d’abord'
         newest: Plus récents d’abord
         oldest: Plus anciens d’abord
+        sender: 'Expéditeur A à Z'
+        sender_desc: 'Expéditeur Z à A'
+        subject: 'Objet A à Z'
+        subject_desc: 'Objet Z à A'
 
 login:
     form:
@@ -5450,3 +5462,14 @@ contacts:
         unsure_one: 'Où va cette ligne ?'
         use_as: 'Utiliser comme…'
         you_placed: 'Placée par vous'
+unsubscribe:
+    button: "Se désabonner"
+    confirm: "Se désabonner de cet expéditeur ? plMail enverra la demande à %host%."
+    sent: "Demande de désabonnement envoyée. Elle peut mettre quelques jours à prendre effet."
+    failed: "L'expéditeur n'a pas accepté la demande. Essayez le lien de désabonnement dans le message lui-même."
+    title_one_click: "Demander à %host% de vous retirer de cette liste"
+    title_page: "Ouvrir la page de désabonnement de l'expéditeur"
+    title_mailto: "Écrire à %address% pour se désabonner"
+row_attachments:
+    hint_preview: "Cliquer pour prévisualiser"
+    hint_download: "Cliquer pour télécharger"

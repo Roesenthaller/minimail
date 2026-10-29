@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace App\Service\Mail;
 
 use App\Domain\DTO\Mail\ThreadRow;
+use App\Domain\DTO\Mail\ThreadRowAttachment;
 use App\Domain\DTO\Mail\ThreadRowMessage;
+use App\Domain\Helper\MediaAttachment;
+use App\Domain\Helper\PdfAttachment;
 use App\Domain\Enum\Mail\MessageFlag;
 use App\Domain\Enum\Mail\SendFailure;
 use App\Entity\Mail\MessageThread;
+use App\Repository\Mail\MessagePartRepository;
 use App\Repository\Mail\MessageRepository;
 use App\Repository\Mail\MessageThreadRepository;
 use DateTimeImmutable;
@@ -39,6 +43,12 @@ use Symfony\Contracts\Service\ResetInterface;
  * assembled it — is read from the entities, because those are the truth for
  * this request and may hold a message not yet flushed.
  *
+ * ── The files a row names ──────────────────────────────────────────────────
+ * A third statement for the page, and only when something on it has a file:
+ * MessagePartRepository::findListedForThreads(), fields again, no entity. The
+ * row shows a few chips and a hover card from it, so it needs a name, a type
+ * and a size per file — not the message the file came in.
+ *
  * ── One side of a partly deleted conversation ──────────────────────────────
  * A thread with some of its messages in the bin is listed in Trash and in its
  * other lists at once (#268). Each row is drawn from the messages on its side
@@ -56,10 +66,19 @@ final class ThreadRows implements ResetInterface
     public function __construct(
         private readonly MessageThreadRepository $threads,
         private readonly MessageRepository $messages,
+        private readonly MessagePartRepository $parts,
+        private readonly AttachmentThumbnailer $thumbnailer,
         private readonly MessageSnippet $snippet,
         private readonly BinView $bin,
     ) {
     }
+
+    /**
+     * More than this is a row that is mostly a list of files, and the chips
+     * show two anyway. Bounds the work and the markup for a thread that is a
+     * long chain of forwards, each carrying the same pile again.
+     */
+    private const int MAX_ROW_ATTACHMENTS = 12;
 
     public function reset(): void
     {
@@ -135,11 +154,38 @@ final class ThreadRows implements ResetInterface
             }
         }
 
+        // The files of the messages on the side being looked at, in the shape
+        // the list query answers with, so one rule builds both.
+        $keptIds = $this->readableIds($kept);
+        $partRows = [];
+
+        foreach ($entities as $entity) {
+            if (null === $entity->id || false === in_array($entity->id, $keptIds, true)) {
+                continue;
+            }
+
+            foreach ($entity->messageParts as $part) {
+                if (false === $part->isListed() || null === $part->id) {
+                    continue;
+                }
+
+                $partRows[] = [
+                    'id'          => $part->id,
+                    'messageId'   => $entity->id,
+                    'filename'    => $part->filename,
+                    'contentType' => $part->contentType,
+                    'size'        => $part->size,
+                    'sealed'      => $part->sealed,
+                ];
+            }
+        }
+
         return new ThreadRow(
             $kept,
             $this->snippet->of($latest),
             true === $latest?->crypto?->isEncrypted(),
             count($kept) < count($all),
+            $this->attachmentsOf($partRows),
         );
     }
 
@@ -219,6 +265,36 @@ final class ThreadRows implements ResetInterface
 
         $bodies = $this->messages->findSnippetBodies($latestIds);
 
+        // Only the threads that have a file at all, so the common page — an
+        // inbox of mail with nothing attached — costs no extra statement.
+        $withFiles = [];
+        $allowed   = [];
+
+        foreach ($byThread as $threadId => $messages) {
+            foreach ($messages as $message) {
+                if (true === $message->hasAttachments && false === $message->isDraft) {
+                    $withFiles[$threadId] = $threadId;
+                }
+            }
+
+            $allowed[$threadId] = $this->readableIds($messages);
+        }
+
+        /** @var array<int, list<array<string, mixed>>> $partsByThread */
+        $partsByThread = [];
+
+        /** @var list<array{id: int, threadId: int, messageId: int, filename: ?string, contentType: ?string, size: ?int, sealed: bool}> $rows */
+        $rows = $this->parts->findListedForThreads(array_values($withFiles));
+
+        foreach ($rows as $part) {
+            // Cast, as the row fields are: IDENTITY() may come back a string.
+            $threadId = (int) $part['threadId'];
+
+            if (true === in_array((int) $part['messageId'], $allowed[$threadId] ?? [], true)) {
+                $partsByThread[$threadId][] = $part;
+            }
+        }
+
         foreach ($byThread as $threadId => $messages) {
             $latestId = ($messages[count($messages) - 1] ?? null)?->id;
             $body     = null !== $latestId ? ($bodies[$latestId] ?? null) : null;
@@ -230,8 +306,83 @@ final class ThreadRows implements ResetInterface
                 // nullsafe operator guards the call, not the offset.
                 null !== $body && true === $body['crypto']?->isEncrypted(),
                 $narrowed[$threadId],
+                $this->attachmentsOf($partsByThread[$threadId] ?? []),
             );
         }
+    }
+
+    /**
+     * The ids of the messages whose files the row may name: the ones on the
+     * side being looked at, and never a draft. An unsent draft's attachments
+     * are the writer's own work in progress, and a row that listed them would
+     * show a file in the inbox that has not been sent to anyone.
+     *
+     * @param list<ThreadRowMessage> $messages
+     *
+     * @return list<int>
+     */
+    private function readableIds(array $messages): array
+    {
+        $ids = [];
+
+        foreach ($messages as $message) {
+            if (null !== $message->id && false === $message->isDraft) {
+                $ids[] = $message->id;
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
+     * One row's files, as chips will show them.
+     *
+     * Repeats are dropped — the same name and size is the same file, and a
+     * conversation in which every reply quotes the thread's PDF again should
+     * show one PDF, not six. Different sizes keep both, because "Invoice.pdf"
+     * sent twice with a correction is two documents.
+     *
+     * @param list<array<string, mixed>> $parts rows from findListedForThreads(), oldest first
+     *
+     * @return list<ThreadRowAttachment>
+     */
+    private function attachmentsOf(array $parts): array
+    {
+        $attachments = [];
+        $seen        = [];
+
+        foreach ($parts as $part) {
+            $filename    = is_string($part['filename'] ?? null) ? $part['filename'] : '';
+            $contentType = is_string($part['contentType'] ?? null) ? $part['contentType'] : null;
+            $size        = is_int($part['size'] ?? null) ? $part['size'] : null;
+            $sealed      = true === ($part['sealed'] ?? false);
+
+            $key = '' !== $filename ? mb_strtolower($filename) . '|' . (string) $size : 'part:' . (int) $part['id'];
+
+            if (isset($seen[$key])) {
+                continue;
+            }
+
+            $seen[$key] = true;
+
+            $attachments[] = new ThreadRowAttachment(
+                (int) $part['id'],
+                $filename,
+                $contentType,
+                $size,
+                // The same decision AttachmentPreviewExtension::previewKind()
+                // makes for the chip in the conversation, from the same two
+                // helpers — a sealed part has nothing a viewer could show.
+                $sealed ? null : (PdfAttachment::matches($contentType, $filename) ? 'pdf' : MediaAttachment::kindOf($contentType, $filename)),
+                $this->thumbnailer->canPreview($contentType, $size, $sealed),
+            );
+
+            if (count($attachments) >= self::MAX_ROW_ATTACHMENTS) {
+                break;
+            }
+        }
+
+        return $attachments;
     }
 
     private static function stringOrNull(mixed $value): ?string

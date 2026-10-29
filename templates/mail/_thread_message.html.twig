@@ -256,7 +256,9 @@ Variables:
            attachment is first looked at, and the answer decides both what is
            listed and whether there is a list at all. #}
         {% do attached_sender_key(message) %}
-        {% if message.hasAttachments %}
+        {# `is defined`, not |default(true): the default filter fires on false
+           as well as on absent, which would make a deliberate false a true. #}
+        {% if message.hasAttachments and (listAttachments is defined ? listAttachments : true) %}
             <div class="flex flex-wrap items-center gap-2 mb-4">
                 <span class="text-xs font-medium text-ink-faint">{{ 'message.attachments'|trans }}</span>
                 {# isListed: not inline, and not the sender's own public key,

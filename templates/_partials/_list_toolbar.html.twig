@@ -473,9 +473,12 @@ closes the menu: ui--dropdown closes on a click OUTSIDE it, and a row is inside.
             route:   'app_mail_search',
         } only %}
     {% elseif list_sort is defined and list_sort is not null and total > 0 %}
+        {# Just the two by date. The other orders are the column headings' (see
+           _column_headers), and the menu's button still names whichever one is
+           in force. #}
         {% include '_partials/_sort_menu.html.twig' with {
             current: list_sort,
-            options: enum('App\\Domain\\Enum\\Mail\\ListSortOrder').cases,
+            options: enum('App\\Domain\\Enum\\Mail\\ListSortOrder').cases|filter(order => order.isDate),
             route:   app.request.attributes.get('_route'),
         } only %}
     {% endif %}

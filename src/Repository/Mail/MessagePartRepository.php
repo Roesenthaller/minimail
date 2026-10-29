@@ -18,6 +18,51 @@ class MessagePartRepository extends ServiceEntityRepository
     }
 
     /**
+     * The files a page of conversation rows names, in one statement.
+     *
+     * Fields rather than entities, for the reason MessageRepository::
+     * findRowFieldsForThreads() is: the row reads a name, a type and a size.
+     * "Listed" is MessagePart::isListed() written as a condition — not inline,
+     * and not the sender's own public key — so a row and the conversation it
+     * opens count the same files.
+     *
+     * Ordered by id, which is arrival order, so the oldest file comes first.
+     * Which messages' files count (not a draft's, and only the side of a
+     * partly deleted conversation the row shows) is the caller's to decide:
+     * both are facts about the row that this statement does not have.
+     *
+     * @param list<int> $threadIds
+     *
+     * @return list<array{id: int, threadId: int, messageId: int, filename: ?string, contentType: ?string, size: ?int, sealed: bool}>
+     */
+    public function findListedForThreads(array $threadIds): array
+    {
+        if ([] === $threadIds) {
+            return [];
+        }
+
+        /** @var list<array{id: int, threadId: int, messageId: int, filename: ?string, contentType: ?string, size: ?int, sealed: bool}> */
+        return $this->createQueryBuilder('p')
+            ->select(
+                'p.id',
+                'IDENTITY(m.thread) AS threadId',
+                'm.id AS messageId',
+                'p.filename',
+                'p.contentType',
+                'p.size',
+                'p.sealed',
+            )
+            ->join('p.message', 'm')
+            ->where('m.thread IN (:threads)')
+            ->andWhere('(p.isInline IS NULL OR p.isInline = false)')
+            ->andWhere('p.senderKeyFingerprint IS NULL')
+            ->setParameter('threads', $threadIds)
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+    /**
      * Every message that has at least one part, as ids.
      *
      * DISTINCT over a projection, which Doctrine's API has no form of: findBy()

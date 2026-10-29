@@ -487,6 +487,16 @@ which of the two is happening.
            a direct child of the frame's flex column. #}
         <div data-list-region="tabs" class="contents">{% block inbox_tabs %}{% endblock %}</div>
 
+        {# Column headings, on the folder lists only: the search page has its own
+           order (SearchSortOrder) and no columns to sort by. Drawn by the wide
+           row shape alone — see the partial. #}
+        {% if list_sort is defined and list_sort is not null and (total ?? 0) > 0 %}
+            {% include '_partials/_column_headers.html.twig' with {
+                current: list_sort,
+                route:   app.request.attributes.get('_route'),
+            } only %}
+        {% endif %}
+
         {# The rows are a region too. A refresh brings them up to date by
            morphing rather than replacing — see mail--mail-pane#_morphRows.
 

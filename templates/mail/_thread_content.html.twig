@@ -128,6 +128,18 @@ self-contained: no {% extends %}, no block dependencies.
     <span class="ml-2 text-sm text-ink-faint truncate min-w-0">
         {{ thread.subject ?: ('thread.no_subject'|trans) }}
     </span>
+
+    {# Leaving the sender's list, at the end of the bar where the eye lands
+       after the subject. Only drawn when a message in the conversation says
+       how — see UnsubscribeResolver — so an ordinary conversation gets no
+       button at all rather than a disabled one. #}
+    {% set unsubscribe = unsubscribe_options(thread) %}
+    {% if unsubscribe is not null %}
+        {% include 'mail/_unsubscribe_button.html.twig' with {
+            options: unsubscribe,
+            account: thread.account ?? null,
+        } only %}
+    {% endif %}
 </div>
 </div>{# /toolbar #}
 
@@ -171,6 +183,39 @@ self-contained: no {% extends %}, no block dependencies.
             {{ thread_summary.trigger(thread, summary|default(null)) }}
         </div>
 
+        {# Every attachment in the conversation, directly under the subject.
+           Each message still lists its own inside its body (see
+           _thread_message), which is how a reader tells WHO sent a file in a
+           long thread; this strip answers the other question, "is there a file
+           in here at all", without opening anything. A single-message thread
+           has only one place the files could be, so the message leaves its own
+           list out there rather than printing the same chips twice.
+
+           `attached_sender_key()` first, for the reason _thread_message gives:
+           it decides which parts count as listed. Drafts are skipped because
+           the thread view renders them as an editor row, not as mail. #}
+        {% set stripParts = [] %}
+        {% for stripMessage in messages|default(thread.messages) %}
+            {% if stripMessage.hasAttachments and not stripMessage.isDraft %}
+                {% do attached_sender_key(stripMessage) %}
+                {% for part in stripMessage.messageParts %}
+                    {% if part.isListed %}
+                        {% set stripParts = stripParts|merge([part]) %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        {% if stripParts|length > 0 %}
+            <div class="flex flex-wrap items-center gap-2 mb-5" data-thread-attachments>
+                <span class="text-xs font-medium text-ink-faint">
+                    <i class="fa-solid fa-paperclip mr-1" aria-hidden="true"></i>{{ 'message.attachments'|trans }} ({{ stripParts|length }})
+                </span>
+                {% for part in stripParts %}
+                    {% include 'mail/_attachment_chip.html.twig' with { part: part } %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
         {# What plMail read out of this conversation, before the conversation. #}
         {% include 'mail/_insight_strip.html.twig' with { insights: insights|default([]) } only %}
 
@@ -213,9 +258,12 @@ self-contained: no {% extends %}, no block dependencies.
            or none of them is, and none needs marking as such. #}
         <div id="thread_messages_{{ thread.id }}" class="thread-messages" data-enter-stagger>
             {% for message in messages %}
+                {# `listAttachments`: the strip above already lists a lone
+                   message's files. #}
                 {% include 'mail/_thread_message.html.twig' with {
                     message:  message,
                     expanded: loop.last or message.seenAt is null,
+                    listAttachments: messages|length > 1,
                 } only %}
             {% endfor %}
         </div>

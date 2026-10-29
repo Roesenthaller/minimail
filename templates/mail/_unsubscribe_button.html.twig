@@ -1,0 +1,64 @@
+{#
+mail/_unsubscribe_button.html.twig
+─────────────────────────────────────────────────────────────────────────────
+The Unsubscribe button at the right-hand end of the reading pane's toolbar.
+
+Variables:
+  options   UnsubscribeOptions   what the sender offered (see UnsubscribeResolver)
+  account   Account|null         the mailbox the conversation is in, so a mailto
+                                 request is written FROM the subscribed address
+
+One button, three behaviours, chosen in the order that asks the least of the
+reader:
+
+  one-click   plMail makes the request itself, after a confirmation that names
+              the host it will contact. Nothing of the sender's is opened.
+  page        the sender's own unsubscribe page, in a new tab. plMail cannot
+              finish a form on someone else's site, so it does not pretend to.
+  mailto      the composer, pre-filled. Sending is still the reader's click.
+
+`rel="noopener noreferrer nofollow"` on the page link: the address came from a
+mail header, so the tab it opens must not be able to reach back into this one
+(`noopener`) and must not be told which mailbox the click came from
+(`noreferrer`).
+#}
+{% set buttonClass = 'ml-auto flex-shrink-0 inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-xs font-medium
+                      text-ink-muted hover:text-ink hover:bg-hover border border-line transition-colors cursor-pointer' %}
+
+{% if options.oneClickUrl is not null %}
+    <button type="button"
+            data-controller="mail--unsubscribe"
+            data-action="click->mail--unsubscribe#oneClick"
+            data-mail--unsubscribe-url-value="{{ path('app_mail_unsubscribe', { id: options.messageId }) }}"
+            data-mail--unsubscribe-confirm-value="{{ 'unsubscribe.confirm'|trans({ '%host%': options.oneClickHost }) }}"
+            data-mail--unsubscribe-sent-value="{{ 'unsubscribe.sent'|trans }}"
+            data-mail--unsubscribe-failed-value="{{ 'unsubscribe.failed'|trans }}"
+            title="{{ 'unsubscribe.title_one_click'|trans({ '%host%': options.oneClickHost }) }}"
+            class="{{ buttonClass }} disabled:opacity-50 disabled:cursor-wait">
+        <i class="fa-solid fa-ban text-[11px]" aria-hidden="true"></i>
+        {{ 'unsubscribe.button'|trans }}
+    </button>
+{% elseif options.webUrl is not null %}
+    <a href="{{ options.webUrl }}"
+       target="_blank"
+       rel="noopener noreferrer nofollow"
+       title="{{ 'unsubscribe.title_page'|trans }}"
+       class="{{ buttonClass }}">
+        <i class="fa-solid fa-ban text-[11px]" aria-hidden="true"></i>
+        {{ 'unsubscribe.button'|trans }}
+        <i class="fa-solid fa-arrow-up-right-from-square text-[9px] text-ink-faint" aria-hidden="true"></i>
+    </a>
+{% else %}
+    <a href="{{ path('app_compose_new', {
+           to:      options.mailtoAddress,
+           subject: options.mailtoSubject,
+           body:    options.mailtoBody,
+           account: account is not null ? account.id : null,
+       }) }}"
+       data-turbo-frame="compose_dock"
+       title="{{ 'unsubscribe.title_mailto'|trans({ '%address%': options.mailtoAddress }) }}"
+       class="{{ buttonClass }}">
+        <i class="fa-solid fa-ban text-[11px]" aria-hidden="true"></i>
+        {{ 'unsubscribe.button'|trans }}
+    </a>
+{% endif %}

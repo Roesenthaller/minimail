@@ -421,20 +421,40 @@ be a worse regression than the one this feature fixes.
             {# `data-row-avatar-face`: the hook the "sender discs off" setting
                paints a plain circle over. It cannot be hidden — see app.css —
                because this element's sibling input is the row's checkbox. #}
+            {# The sender's logo, when there is one to show: a white badge laid
+               over the initial, invisible until its picture has loaded, so the
+               initial is what a domain with no icon (or a slow one) keeps.
+               It is inside the face, which is what hides on hover and when the
+               row is ticked, so the check mark takes over from it exactly as it
+               does from the initial. See mail--sender-logo and
+               SenderLogoController. #}
+            {% set logoUrl = sender_logo_url(senderSeed) %}
             <span data-row-avatar-face
-                  class="flex items-center justify-center rounded-full
-                         w-9 h-9 text-sm font-semibold select-none
+                  class="relative flex items-center justify-center rounded-full
+                         w-7 h-7 text-xs font-semibold select-none
                          transition-opacity
                          peer-checked:opacity-0 group-hover/avatar:opacity-0
                          {{ senderSeed|avatar_tone }}"
-                  aria-hidden="true">{{ sender|avatar_initial(senderSeed) }}</span>
+                  aria-hidden="true">{{ sender|avatar_initial(senderSeed) }}
+                {%- if logoUrl is not null -%}
+                    <span data-controller="mail--sender-logo"
+                          class="absolute inset-0 flex items-center justify-center rounded-full bg-white ring-1 ring-black/10 opacity-0 transition-opacity">
+                        <img src="{{ logoUrl }}" alt="" width="16" height="16"
+                             loading="lazy" decoding="async"
+                             referrerpolicy="no-referrer"
+                             class="w-4 h-4 object-contain"
+                             data-mail--sender-logo-target="image"
+                             data-action="load->mail--sender-logo#show error->mail--sender-logo#drop">
+                    </span>
+                {%- endif -%}
+            </span>
 
             <span class="absolute inset-0 flex items-center justify-center rounded-full
                          bg-accent text-accent-ink
                          opacity-0 transition-opacity
                          peer-checked:opacity-100 group-hover/avatar:opacity-100
                          peer-focus-visible:ring-2 peer-focus-visible:ring-accent peer-focus-visible:ring-offset-1"
-                  aria-hidden="true"><i class="fa-solid fa-check text-xs"></i></span>
+                  aria-hidden="true"><i class="fa-solid fa-check text-[10px]"></i></span>
         </label>
 
         {# Content — three shapes, chosen by the LIST's width:
@@ -706,6 +726,15 @@ be a worse regression than the one this feature fixes.
                            app.css releases its white-space only when the
                            setting asks for two. #}
                         <span data-row-snippet class="truncate text-ink-faint {{ scheduledAt is not null ? 'hidden @xl:inline-block' : '' }}">{{ snippet }}</span>
+
+                        {# The files in the conversation, after the preview and
+                           out of its way: the snippet is the item that gives
+                           up width first. Conversation rows only — `row` is
+                           what thread_row() answered, and a bare Message row
+                           (a search hit, a draft) never asked. #}
+                        {% if row is defined and row.attachments is not empty %}
+                            {% include '_partials/_row_attachments.html.twig' with { attachments: row.attachments } only %}
+                        {% endif %}
                     </span>
                 </div>
 

@@ -277,6 +277,24 @@ final readonly class ImageProxyFetcher
     }
 
     /**
+     * Rules 1–3 for a caller that is not an image fetch but must make an
+     * outbound request to an address a stranger chose — the one-click
+     * unsubscribe is the first. Offered rather than copied so that there is
+     * one place that knows what "a public host" means, and the next caller
+     * inherits the next fix to it.
+     *
+     * The caller makes the request itself and is responsible for the other
+     * half of the rule set: connecting to THIS address and no other (the
+     * client's `resolve` option) and not following redirects.
+     *
+     * @return array{host: string, ip: string}|null
+     */
+    public function checkedTarget(string $url): ?array
+    {
+        return $this->validate($url);
+    }
+
+    /**
      * Rules 1–3. Returns the host and the ONE address the connection may use.
      *
      * @return array{host: string, ip: string}|null

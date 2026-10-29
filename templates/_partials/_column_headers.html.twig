@@ -1,0 +1,75 @@
+{#
+    Column headings for the folder lists, above the rows: sender, subject,
+    attachments and date. A click on one sorts by it, and a second click on the
+    same one reverses it.
+
+    Only in the widest row shape. That is the only one with columns: below
+    `row-line` (75rem of list width) the sender sits above the subject and there
+    is nothing for a heading to stand over, so the strip is not drawn and the
+    sort menu in the toolbar remains the way to change the order.
+
+    Links, for the reason _sort_menu.html.twig gives: each is a GET into the
+    same route inside #inbox-list-frame, and the controller remembers the choice
+    as it answers. No JavaScript.
+
+    The page is dropped, never carried, and the route's own parameters are kept
+    (a label list lives at /mail/label/{id}) — both for the reasons given in the
+    sort menu.
+
+    The widths mirror the row's: its avatar is w-7 and its sender w-40, with a
+    gap-3 between everything. The subject heading sits over the subject and the
+    preview together, which share one flexible space and have no edge of their
+    own to line up with.
+
+    Parameters:
+      current  ListSortOrder   the order in force
+      route    string          the route each heading links to
+#}
+{% set base_params = app.request.attributes.get('_route_params')|default({})
+    |merge(app.request.query.all)
+    |merge({page: null})
+    |filter(v => v is not null) %}
+
+{% macro heading(column, current, route, base_params, extra) %}
+    {% set next   = current.toggle(column) %}
+    {% set active = current.column == column %}
+    {% set label  = ('list.columns.' ~ column)|trans %}
+
+    <a href="{{ path(route, base_params|merge({sort: next.value})) }}"
+       data-turbo-frame="inbox-list-frame"
+       data-turbo-action="advance"
+       data-column-sort="{{ column }}"
+       title="{{ 'list.columns.sort_by'|trans({'%column%': label}) }}"
+       class="inline-flex items-center gap-1 min-w-0 rounded px-1 -mx-1 py-0.5 text-[11px] font-medium
+              hover:bg-hover hover:text-ink transition-colors
+              {{ active ? 'text-accent' : 'text-ink-faint' }} {{ extra }}">
+        <span class="truncate">{{ label }}</span>
+        {% if active %}
+            <i class="fa-solid {{ current.isDescending ? 'fa-arrow-down' : 'fa-arrow-up' }} text-[9px]" aria-hidden="true"></i>
+        {% endif %}
+    </a>
+{% endmacro %}
+
+{% from _self import heading %}
+
+<div data-column-headers
+     role="row"
+     class="hidden row-line:flex items-center gap-3 pl-3 pr-4 py-1 border-b border-line bg-surface">
+    <span class="w-7 shrink-0" aria-hidden="true"></span>
+
+    <div class="w-40 shrink-0 min-w-0" role="columnheader" aria-sort="{{ current.column == 'sender' ? (current.isDescending ? 'descending' : 'ascending') : 'none' }}">
+        {{ heading('sender', current, route, base_params, '') }}
+    </div>
+
+    <div class="flex-1 min-w-0" role="columnheader" aria-sort="{{ current.column == 'subject' ? (current.isDescending ? 'descending' : 'ascending') : 'none' }}">
+        {{ heading('subject', current, route, base_params, '') }}
+    </div>
+
+    <div class="shrink-0" role="columnheader" aria-sort="{{ current.column == 'attachments' ? (current.isDescending ? 'descending' : 'ascending') : 'none' }}">
+        {{ heading('attachments', current, route, base_params, '') }}
+    </div>
+
+    <div class="w-20 shrink-0 text-right" role="columnheader" aria-sort="{{ current.column == 'date' ? (current.isDescending ? 'descending' : 'ascending') : 'none' }}">
+        {{ heading('date', current, route, base_params, 'justify-end') }}
+    </div>
+</div>

@@ -2697,9 +2697,21 @@ label:
         shown: Label ist jetzt sichtbar.
 
 list:
+    columns:
+        attachments: 'Anhänge'
+        date: Datum
+        sender: Absender
+        sort_by: 'Nach %column% sortieren'
+        subject: Betreff
     sort:
+        attachments: 'Meiste Anhänge zuerst'
+        attachments_asc: 'Wenigste Anhänge zuerst'
         newest: Neueste zuerst
         oldest: Älteste zuerst
+        sender: Absender A bis Z
+        sender_desc: Absender Z bis A
+        subject: Betreff A bis Z
+        subject_desc: Betreff Z bis A
 
 login:
     form:
@@ -5419,3 +5431,14 @@ contacts:
         unsure_one: 'Wohin gehört diese Zeile?'
         use_as: 'Verwenden als …'
         you_placed: 'Von dir zugeordnet'
+unsubscribe:
+    button: "Abbestellen"
+    confirm: "Diesen Absender abbestellen? plMail sendet die Anfrage an %host%."
+    sent: "Abmeldeanfrage gesendet. Es kann einige Tage dauern, bis sie wirksam wird."
+    failed: "Der Absender hat die Anfrage nicht angenommen. Probiere den Abmelde-Link in der Nachricht selbst."
+    title_one_click: "%host% bitten, dich aus dieser Liste zu entfernen"
+    title_page: "Abmeldeseite des Absenders öffnen"
+    title_mailto: "An %address% schreiben, um dich abzumelden"
+row_attachments:
+    hint_preview: "Klicken zum Ansehen"
+    hint_download: "Klicken zum Herunterladen"

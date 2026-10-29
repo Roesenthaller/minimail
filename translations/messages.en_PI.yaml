@@ -2575,9 +2575,21 @@ label:
         shown: That flag flies again.
 
 list:
+    columns:
+        attachments: Cargo
+        date: Date
+        sender: Sender
+        sort_by: 'Sort by %column%'
+        subject: Subject
     sort:
+        attachments: Most cargo first
+        attachments_asc: Least cargo first
         newest: Freshest catch
         oldest: Oldest catch
+        sender: Sender A to Z
+        sender_desc: Sender Z to A
+        subject: Subject A to Z
+        subject_desc: Subject Z to A
 
 login:
     form:
@@ -5188,3 +5200,14 @@ contacts:
         unsure_one: 'Where does this line belong?'
         use_as: 'Use as…'
         you_placed: 'Ye berthed this line'
+unsubscribe:
+    button: "Jump ship"
+    confirm: "Jump ship from this sender? plMail will send word to %host%."
+    sent: "Word sent. It may take a few days to reach the shore."
+    failed: "The sender wouldn't take the message. Try the link in the mail itself."
+    title_one_click: "Ask %host% to strike ye from this list"
+    title_page: "Open the sender's page for leaving"
+    title_mailto: "Write to %address% to leave the crew"
+row_attachments:
+    hint_preview: "Click to have a look"
+    hint_download: "Click to haul it aboard"

@@ -2378,9 +2378,21 @@ label:
         hidden: '标签已隐藏。'
         shown: '标签已显示。'
 list:
+    columns:
+        attachments: '附件'
+        date: '日期'
+        sender: '发件人'
+        sort_by: '按%column%排序'
+        subject: '主题'
     sort:
+        attachments: '附件多的优先'
+        attachments_asc: '附件少的优先'
         newest: '最新优先'
         oldest: '最早优先'
+        sender: '发件人 A 到 Z'
+        sender_desc: '发件人 Z 到 A'
+        subject: '主题 A 到 Z'
+        subject_desc: '主题 Z 到 A'
 login:
     form:
         email: '电子邮件地址'
@@ -4671,3 +4683,14 @@ contacts:
         unsure_one: "这一行应归入哪里？"
         use_as: "用作…"
         you_placed: "此行由你归类"
+unsubscribe:
+    button: "取消订阅"
+    confirm: "要取消订阅此发件人吗？plMail 会把请求发送到 %host%。"
+    sent: "取消订阅请求已发送，可能需要几天才能生效。"
+    failed: "发件人未接受该请求。请尝试邮件中的取消订阅链接。"
+    title_one_click: "请 %host% 把你从此列表中移除"
+    title_page: "打开发件人的取消订阅页面"
+    title_mailto: "写信给 %address% 以取消订阅"
+row_attachments:
+    hint_preview: "点击预览"
+    hint_download: "点击下载"

@@ -59,18 +59,29 @@ final readonly class AttachmentThumbnailer
      */
     public function isPreviewable(MessagePart $part): bool
     {
+        return $this->canPreview($part->contentType, $part->size, $part->sealed);
+    }
+
+    /**
+     * The same question from the columns alone, for a caller that holds a row
+     * of scalars rather than a MessagePart — the conversation list reads its
+     * attachments that way, and hydrating an entity per file to ask this would
+     * undo the reason it does. One rule, two ways in: isPreviewable() above
+     * delegates here, so the list and the thread view cannot disagree about
+     * which files have a picture.
+     */
+    public function canPreview(?string $contentType, ?int $size, bool $sealed = false): bool
+    {
         // Ciphertext: there is no picture in it to draw. See MessagePart::$sealed.
-        if (true === $part->sealed || false === function_exists('imagecreatetruecolor')) {
+        if (true === $sealed || false === function_exists('imagecreatetruecolor')) {
             return false;
         }
-
-        $size = $part->size;
 
         if (null !== $size && $size > self::MAX_BYTES) {
             return false;
         }
 
-        return in_array(strtolower((string) $part->contentType), self::TYPES, true);
+        return in_array(strtolower((string) $contentType), self::TYPES, true);
     }
 
     /**

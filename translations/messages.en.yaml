@@ -2693,9 +2693,21 @@ label:
         shown: Label is now visible.
 
 list:
+    columns:
+        attachments: Attachments
+        date: Date
+        sender: Sender
+        sort_by: 'Sort by %column%'
+        subject: Subject
     sort:
+        attachments: Most attachments first
+        attachments_asc: Fewest attachments first
         newest: Newest first
         oldest: Oldest first
+        sender: Sender A to Z
+        sender_desc: Sender Z to A
+        subject: Subject A to Z
+        subject_desc: Subject Z to A
 
 login:
     form:
@@ -5415,3 +5427,14 @@ contacts:
         unsure_one: 'Where does this line go?'
         use_as: 'Use as…'
         you_placed: 'You placed this line'
+unsubscribe:
+    button: "Unsubscribe"
+    confirm: "Unsubscribe from this sender? plMail will send the request to %host%."
+    sent: "Unsubscribe request sent. It can take a few days to take effect."
+    failed: "The sender did not accept the request. Try the unsubscribe link in the message itself."
+    title_one_click: "Ask %host% to remove you from this list"
+    title_page: "Open the sender's unsubscribe page"
+    title_mailto: "Write to %address% to unsubscribe"
+row_attachments:
+    hint_preview: "Click to preview"
+    hint_download: "Click to download"

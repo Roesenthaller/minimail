@@ -118,6 +118,11 @@ class ComposeController extends AbstractController
                 return $this->render('compose/_no_account.html.twig', [], new Response(null, Response::HTTP_OK));
             }
 
+            // Written FROM the address a link names when it names one the user
+            // owns: an unsubscribe request only works from the address that
+            // was subscribed, which is not necessarily the default account.
+            $account = $this->requestedAccount() ?? $account;
+
             $message = new Message();
             $message->account = $account;
 
@@ -137,6 +142,7 @@ class ComposeController extends AbstractController
             $message->bodyHtml = $this->window->signatureSeed($account);
 
             $message->toAddresses = $this->addressedTo();
+            $this->prefill($message);
         } else {
             $this->denyAccessUnlessGranted(OwnershipVoter::OWN, $message);
             $this->assertEditableDraft($message);
@@ -169,6 +175,58 @@ class ComposeController extends AbstractController
         $name = trim((string) $query?->get('name', ''));
 
         return [['name' => '' === $name ? null : mb_substr($name, 0, 255), 'address' => $email]];
+    }
+
+    /**
+     * The account a link asked to write from: `?account=<id>`. Only one the
+     * signed-in user owns — the id is a number anybody can type, and the voter
+     * is what stops it naming somebody else's mailbox.
+     */
+    private function requestedAccount(): ?Account
+    {
+        $id = $this->requestStack->getCurrentRequest()?->query->getInt('account') ?? 0;
+
+        if ($id < 1) {
+            return null;
+        }
+
+        $account = $this->em->find(Account::class, $id);
+
+        if (null === $account || false === $this->isGranted(OwnershipVoter::OWN, $account)) {
+            return null;
+        }
+
+        return $account;
+    }
+
+    /**
+     * A subject and a first line a link asked for: `?subject=` and `?body=`,
+     * which is what the unsubscribe button's `mailto:` option sends.
+     *
+     * Both are text the link's author chose, so both are treated as text and
+     * never as markup: the body is escaped and set as a paragraph above the
+     * signature, and control characters are dropped from the subject so it
+     * cannot carry a header line break. Nothing is sent by this — it only fills
+     * in a draft the person still reads and sends themselves.
+     */
+    private function prefill(Message $message): void
+    {
+        $query = $this->requestStack->getCurrentRequest()?->query;
+
+        $subject = trim((string) preg_replace('/[\x00-\x1f\x7f]+/', ' ', (string) $query?->get('subject', '')));
+
+        if ('' !== $subject) {
+            $message->subject = mb_substr($subject, 0, 255);
+        }
+
+        $body = trim((string) preg_replace('/[^\P{C}\n]+/u', '', (string) $query?->get('body', '')));
+
+        if ('' !== $body) {
+            $message->bodyHtml = '<p>'
+                . nl2br(htmlspecialchars(mb_substr($body, 0, 2000), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'), false)
+                . '</p>'
+                . $message->bodyHtml;
+        }
     }
 
     #[Route('/reply/{id}', name: 'reply', methods: ['GET'])]

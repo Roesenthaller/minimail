@@ -1,0 +1,82 @@
+{#
+_partials/_row_attachments.html.twig
+─────────────────────────────────────────────────────────────────────────────
+The files a conversation names, as small chips at the end of its row, with a
+card that floats beside whichever one the pointer is on.
+
+Variables:
+  attachments   list<ThreadRowAttachment>   from thread_row(thread).attachments
+
+Two chips and a "+N", not all of them: this sits on a line that is already
+shared with the subject and the preview, and a row with a dozen files would
+otherwise be a row of nothing else. The rest are one click away in the
+conversation, where the full list is the first thing on the page.
+
+Only from `@xl` (36rem) up. Below that the preview line has room for about a
+word, and the paperclip in the meta column already says "there is a file".
+
+Why the chips are not part of the row's overlay link: they have their own
+destinations — the viewer for a PDF, picture or video, a download for the rest —
+and sit above the overlay (`z-10 pointer-events-auto`) the way the star does.
+A click on one therefore never opens the conversation.
+
+The hover card is built by mail--attachment-hover from the data-* attributes on
+each chip's wrapper. Nothing in them is markup: the name is text the sender
+chose, and the controller only ever sets it as text.
+#}
+{% set shown = attachments|slice(0, 2) %}
+{% set rest = attachments|slice(2) %}
+
+{# `hidden @xl:inline-block`, not `@xl:inline-flex`: Tailwind emits `.hidden`
+   after some display utilities and a container variant does not outrank it, so
+   only the pairing the rest of this list already uses is known to switch on.
+   See the note on the snippet in _thread_row. #}
+<span class="hidden @xl:inline-block shrink-0"
+      data-controller="mail--attachment-hover"
+      data-mail--attachment-hover-preview-hint-value="{{ 'row_attachments.hint_preview'|trans }}"
+      data-mail--attachment-hover-download-hint-value="{{ 'row_attachments.hint_download'|trans }}">
+    <span class="inline-flex items-center gap-1">
+        {% for file in shown %}
+            {% set label = file.filename ?: ('attachment.preview.untitled'|trans) %}
+            {% set chipClass = 'relative z-10 pointer-events-auto cursor-pointer inline-flex items-center gap-1 max-w-[9rem]
+                                rounded-md border border-line bg-sunken px-1.5 py-px text-[11px] leading-4 text-ink-soft
+                                hover:bg-hover hover:text-ink transition-colors
+                                focus:outline-none focus-visible:ring-2 focus-visible:ring-accent' %}
+            <span data-attachment-chip
+                  data-name="{{ label }}"
+                  data-meta="{{ [file.humanSize, file.contentType]|filter(part => part is not empty)|join(' · ') }}"
+                  data-icon="{{ file.icon }}"
+                  data-opens="{{ file.previewKind is not null ? 'preview' : 'download' }}"
+                  {% if file.hasThumbnail %}data-thumb="{{ path('app_mail_attachment_thumbnail', { id: file.id }) }}"{% endif %}>
+                {% if file.previewKind is not null %}
+                    {# The same viewer the chip in the conversation opens. #}
+                    <button type="button"
+                            data-controller="ui--modal"
+                            data-action="click->ui--modal#open click->mail--attachment-hover#hide"
+                            data-ui--modal-size-value="full"
+                            data-ui--modal-src-value="{{ path('app_mail_attachment_preview', { id: file.id }) }}"
+                            data-ui--modal-title-value="{{ label }}"
+                            class="{{ chipClass }}">
+                        <i class="fa-solid {{ file.icon }} text-[10px] text-ink-faint" aria-hidden="true"></i>
+                        <span class="truncate">{{ label }}</span>
+                    </button>
+                {% else %}
+                    {# `download`, for the reason _attachment_chip gives: without
+                       it Turbo intercepts the click and saves nothing. #}
+                    <a href="{{ path('app_mail_attachment', { id: file.id }) }}?download=1"
+                       download="{{ label }}"
+                       data-action="click->mail--attachment-hover#hide"
+                       class="{{ chipClass }}">
+                        <i class="fa-solid {{ file.icon }} text-[10px] text-ink-faint" aria-hidden="true"></i>
+                        <span class="truncate">{{ label }}</span>
+                    </a>
+                {% endif %}
+            </span>
+        {% endfor %}
+
+        {% if rest|length > 0 %}
+            <span class="text-[11px] text-ink-faint whitespace-nowrap"
+                  title="{{ rest|map(file => file.filename ?: ('attachment.preview.untitled'|trans))|join(', ') }}">+{{ rest|length }}</span>
+        {% endif %}
+    </span>
+</span>

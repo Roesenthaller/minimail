@@ -35,12 +35,17 @@ final readonly class ThreadRow
      * @param bool                   $narrowed  whether $messages leaves out the other
      *                                          side of a partly deleted conversation
      *                                          (App\Service\Mail\BinView)
+     * @param list<ThreadRowAttachment> $attachments the files the row names, oldest first and
+     *                                          without repeats — a file that comes back on
+     *                                          every reply is one file. Empty for a row that
+     *                                          has none, and for one whose files were not read.
      */
     public function __construct(
         public array $messages,
         public string $snippet,
         public bool $encrypted = false,
         public bool $narrowed = false,
+        public array $attachments = [],
     ) {
         $this->latest = [] === $messages ? null : $messages[count($messages) - 1];
 
