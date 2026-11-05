@@ -231,6 +231,9 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
             $storageDir: '%env(APP_STORAGE_DIR)%'
+    App\Service\Mail\SenderLogoFetcher:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
     App\Service\Mail\MessageFrameScript:
         arguments:
             $projectDir: '%kernel.project_dir%'
