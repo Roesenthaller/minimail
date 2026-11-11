@@ -182,6 +182,6 @@ final class UnsubscribeResolver
     /** When the message arrived or was sent, as a sortable number. */
     private static function stamp(Message $message): int
     {
-        return ($message->receivedAt ?? $message->sentAt ?? $message->createdAt)?->getTimestamp() ?? 0;
+        return ($message->receivedAt ?? $message->sentAt ?? $message->createdAt)->getTimestamp();
     }
 }
