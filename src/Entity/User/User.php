@@ -743,6 +743,12 @@ class User extends UserEntityModel implements UserInterface, PasswordAuthenticat
     public const string SETTING_SIDEBAR_ACCOUNT = 'sidebar.expanded_account';
 
     /**
+     * Whether an open conversation lists its newest message first. Off until
+     * somebody chooses, so an upgrade changes nothing about how mail reads.
+     */
+    public const string SETTING_THREAD_NEWEST_FIRST = 'reading.newest_first';
+
+    /**
      * The accounts whose folder lists are expanded in the sidebar, as a list of
      * account ids. Replaces SETTING_SIDEBAR_ACCOUNT, which could hold only one
      * and so closed the first account when a second was opened. The old key is
@@ -1167,6 +1173,14 @@ class User extends UserEntityModel implements UserInterface, PasswordAuthenticat
         get => ReadingPaneMode::fromSetting($this->getSetting(self::SETTING_READING_PANE_MODE));
         set (ReadingPaneMode $mode) {
             $this->setSetting(self::SETTING_READING_PANE_MODE, $mode->value);
+        }
+    }
+
+    /** Virtual, out of the settings bag — see SETTING_THREAD_NEWEST_FIRST. */
+    public bool $threadNewestFirst {
+        get => true === $this->getSetting(self::SETTING_THREAD_NEWEST_FIRST);
+        set (bool $newestFirst) {
+            $this->setSetting(self::SETTING_THREAD_NEWEST_FIRST, $newestFirst);
         }
     }
 

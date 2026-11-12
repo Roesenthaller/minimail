@@ -4297,6 +4297,8 @@ settings:
         heading: Spyglass deck
         hint: 'Stowed shows the list an'' the letter one at a time; Starboard lays the letter beside the list when the ship has room for both — drag the rail between ''em to say how much deck each gets.'
         label: 'Lay out the open letter'
+        newest_first_hint: 'In an open parley, put the newest letter on top an'' the older ones below.'
+        newest_first_label: 'Newest letter first'
         off: Stowed
         right: Starboard
         subheading: 'Where a parley opens: in place o'' the list, or beside it.'

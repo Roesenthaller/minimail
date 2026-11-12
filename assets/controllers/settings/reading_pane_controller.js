@@ -63,6 +63,29 @@ export default class extends Controller {
         this._saved = mode;
     }
 
+    /** The newest-message-first checkbox: its own field on the same endpoint. */
+    async toggleNewestFirst(event) {
+        const box = event.target;
+        const body = new FormData();
+        body.append("_token", this.tokenValue);
+        body.append("newest_first", box.checked ? "1" : "0");
+
+        try {
+            const response = await fetch(this.urlValue, {
+                method: "POST",
+                body,
+                headers: { "X-Requested-With": "fetch" },
+            });
+
+            if (requestFailed(response)) {
+                box.checked = !box.checked;
+            }
+        } catch {
+            box.checked = !box.checked;
+            requestFailed(null);
+        }
+    }
+
     /**
      * Put the radio back to what the server has, because a choice that did not
      * land would otherwise read as saved: there is no Save button on this page,

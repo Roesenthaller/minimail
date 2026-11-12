@@ -4519,6 +4519,8 @@ settings:
         heading: Lesebereich
         hint: '„Aus“ zeigt Liste und Nachricht nacheinander; „Rechts“ stellt die Nachricht neben die Liste, sobald das Fenster genug Platz für beide hat – am Trenner dazwischen stellst du ein, wie viel jede bekommt.'
         label: 'Geöffnete Nachricht anzeigen'
+        newest_first_hint: 'Zeigt in einer geöffneten Unterhaltung die neueste Nachricht oben und die älteren darunter.'
+        newest_first_label: 'Neueste Nachricht zuerst'
         off: Aus
         right: Rechts
         subheading: 'Wo eine Unterhaltung aufgeht: anstelle der Liste oder daneben.'

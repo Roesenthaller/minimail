@@ -240,6 +240,13 @@ self-contained: no {% extends %}, no block dependencies.
            association is the fallback for any include that has not been given
            it (its receivedAt-only order is why the list is passed at all). #}
         {% set messages = messages|default(thread.messages) %}
+        {# Newest first, if the reader chose it (Settings, Reading pane). The
+           list arrives oldest first, so it is turned round here and
+           `expanded` below follows whichever end is now the newest. #}
+        {% set newestFirst = app.user is not null and app.user.threadNewestFirst %}
+        {% if newestFirst %}
+            {% set messages = messages|reverse %}
+        {% endif %}
         {# The messages are the one thing in this pane that ARRIVES, so they
            are what animates, and the toolbar and subject above deliberately do
            not: chrome that flinched every time a conversation opened would be
@@ -267,13 +274,13 @@ self-contained: no {% extends %}, no block dependencies.
            messages when it was opened from Trash, the others from anywhere
            else (MailController::side()). So the messages here are all deleted
            or none of them is, and none needs marking as such. #}
-        <div id="thread_messages_{{ thread.id }}" class="thread-messages" data-enter-stagger>
+        <div id="thread_messages_{{ thread.id }}" class="thread-messages" data-enter-stagger data-newest-first="{{ newestFirst ? 'true' : 'false' }}">
             {% for message in messages %}
                 {# `listAttachments`: the strip above already lists a lone
                    message's files. #}
                 {% include 'mail/_thread_message.html.twig' with {
                     message:  message,
-                    expanded: loop.last or message.seenAt is null,
+                    expanded: (newestFirst ? loop.first : loop.last) or message.seenAt is null,
                     listAttachments: messages|length > 1,
                 } only %}
             {% endfor %}

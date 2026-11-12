@@ -69,7 +69,7 @@ Variables: message, thread (MessageThread|null), ctx
     <turbo-stream action="remove" target="thread_message_{{ message.id }}">
     </turbo-stream>
 
-    <turbo-stream action="append" target="thread_messages_{{ thread.id }}">
+    <turbo-stream action="{{ app.user.threadNewestFirst ? 'prepend' : 'append' }}" target="thread_messages_{{ thread.id }}">
         <template>
             {% include 'mail/_thread_message.html.twig' with { message: message, expanded: true, draft: false } only %}
         </template>

@@ -4492,6 +4492,8 @@ settings:
         heading: Reading pane
         hint: 'Off shows the list and the message one at a time. Right puts the message beside the list when the window has room for both — drag the divider between them to choose how much each gets.'
         label: 'Show the open message'
+        newest_first_hint: 'In an open conversation, list the newest message at the top and older ones below it.'
+        newest_first_label: 'Newest message first'
         off: Off
         right: Right
         subheading: 'Where a conversation opens: in place of the list, or beside it.'

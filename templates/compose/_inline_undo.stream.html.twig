@@ -13,7 +13,7 @@ Variables: form, message, ctx (the compose context), threadEntity (MessageThread
 {% if threadEntity is not null %}
     {# Back to being a draft in the conversation. The editor below hides this
        row while it is open, and restores it on close. #}
-    <turbo-stream action="append" target="thread_messages_{{ threadEntity.id }}">
+    <turbo-stream action="{{ app.user.threadNewestFirst ? 'prepend' : 'append' }}" target="thread_messages_{{ threadEntity.id }}">
         <template>
             {% include 'mail/_thread_message.html.twig' with { message: message, expanded: false } only %}
         </template>

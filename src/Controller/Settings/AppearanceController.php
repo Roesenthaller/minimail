@@ -87,6 +87,10 @@ final class AppearanceController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
+        if (true === $request->request->has('newest_first')) {
+            $user->threadNewestFirst = $request->request->getBoolean('newest_first');
+        }
+
         if (true === $request->request->has('width')) {
             $user->setSetting(User::SETTING_APPEARANCE_PREVIEW_WIDTH, max(
                 User::APPEARANCE_PREVIEW_MIN_WIDTH,
@@ -148,6 +152,7 @@ final class AppearanceController extends AbstractController
         return $this->json([
             'mode'  => $user->readingPaneMode->value,
             'width' => $user->readingPaneWidthPct,
+            'newest_first' => $user->threadNewestFirst,
         ]);
     }
 

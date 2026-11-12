@@ -197,6 +197,7 @@ final readonly class ConfigBackupUsers
         // Neither holds an id, and a percentage means the same on any install.
         User::SETTING_READING_PANE_MODE,
         User::SETTING_READING_PANE_WIDTH,
+        User::SETTING_THREAD_NEWEST_FIRST,
         // What a dragged row does, one key per direction. In the backup for the
         // reason the reading pane's keys are: a choice about one's own screen,
         // a short string with no id, and the same meaning on any install. A

@@ -2331,7 +2331,8 @@ export default class extends Controller {
         const html = await this._fetchRow(id);
 
         if (null !== html) {
-            list.insertAdjacentHTML('beforeend', html);
+            // Newest first puts the draft at the top, where the newest message is.
+            list.insertAdjacentHTML(list.dataset.newestFirst === 'true' ? 'afterbegin' : 'beforeend', html);
         }
     }
 

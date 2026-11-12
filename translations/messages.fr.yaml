@@ -4554,6 +4554,8 @@ settings:
         heading: Volet de lecture
         hint: 'Désactivé affiche la liste et le message l’un après l’autre. À droite place le message à côté de la liste quand la fenêtre a la place pour les deux — faites glisser le séparateur pour choisir la part de chacun.'
         label: 'Afficher le message ouvert'
+        newest_first_hint: 'Dans une conversation ouverte, affiche le message le plus récent en haut et les plus anciens en dessous.'
+        newest_first_label: 'Message le plus récent en premier'
         off: Désactivé
         right: À droite
         subheading: 'Où s’ouvre une conversation : à la place de la liste, ou à côté.'
