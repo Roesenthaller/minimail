@@ -194,13 +194,24 @@ self-contained: no {% extends %}, no block dependencies.
            `attached_sender_key()` first, for the reason _thread_message gives:
            it decides which parts count as listed. Drafts are skipped because
            the thread view renders them as an editor row, not as mail. #}
+        {# A file that comes back on every reply is listed once: the same name
+           and size is the same document. A part with no name is never taken for
+           another, as in ThreadRows. The first is the one kept, which is the
+           oldest. #}
         {% set stripParts = [] %}
+        {% set stripSeen = [] %}
         {% for stripMessage in messages|default(thread.messages) %}
             {% if stripMessage.hasAttachments and not stripMessage.isDraft %}
                 {% do attached_sender_key(stripMessage) %}
                 {% for part in stripMessage.messageParts %}
                     {% if part.isListed %}
-                        {% set stripParts = stripParts|merge([part]) %}
+                        {% set stripKey = part.filename ? (part.filename|lower ~ '|' ~ part.size) : null %}
+                        {% if stripKey is null or stripKey not in stripSeen %}
+                            {% set stripParts = stripParts|merge([part]) %}
+                            {% if stripKey is not null %}
+                                {% set stripSeen = stripSeen|merge([stripKey]) %}
+                            {% endif %}
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
             {% endif %}
