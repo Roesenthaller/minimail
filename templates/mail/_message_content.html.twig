@@ -52,11 +52,14 @@
                    was addressed to was not on the page at all. #}
                 {% include 'mail/_message_details.html.twig' with { message: message } only %}
             </div>
-            <p class="text-xs text-ink-faint flex-shrink-0">
-                {# Sent mail shows its sentAt: it has no receivedAt to show. #}
-                {% set shownAt = message.receivedAt ?? message.sentAt %}
-                {{ shownAt ? shownAt|intl_date('dMMMy') ~ ', ' ~ shownAt|date(clock.time) : '' }}
-            </p>
+            <div class="flex items-center gap-1 flex-shrink-0">
+                <p class="text-xs text-ink-faint">
+                    {# Sent mail shows its sentAt: it has no receivedAt to show. #}
+                    {% set shownAt = message.receivedAt ?? message.sentAt %}
+                    {{ shownAt ? shownAt|intl_date('dMMMy') ~ ', ' ~ shownAt|date(clock.time) : '' }}
+                </p>
+                {% include 'mail/_message_actions.html.twig' with { message: message } only %}
+            </div>
         </div>
 
         {# What plMail read out of this conversation, before the conversation. #}
@@ -82,6 +85,12 @@
         {% endif %}
 
         {% include 'mail/_message_body.html.twig' with { message: message } only %}
+
+        {# Reply, Reply all and Forward, and the frame a reply opens in: the
+           same zone the conversation view ends with. A single message opened
+           from the flat Messages list or a search hit had none, so there was
+           no way to answer it from the pane. #}
+        {% include 'mail/_reply_zone.html.twig' with { thread: message.thread, latest: message } only %}
 
     </div>
 </div>
