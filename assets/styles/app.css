@@ -5279,7 +5279,7 @@ label:has(> input.sr-only) {
    line of its own in both.
 */
 @theme {
-    --container-rowwide: 75rem;
+    --container-rowwide: 52rem;
     --container-rowsnug: 48rem;
 }
 
