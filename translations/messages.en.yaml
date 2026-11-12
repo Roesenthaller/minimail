@@ -4418,6 +4418,7 @@ settings:
         profile: Profile
         read_receipts: Read receipts
         reading_pane: Reading pane
+        list_display: 'List display'
         security: Security
         sharing: Sharing
         shortcuts: Keyboard shortcuts
@@ -4493,6 +4494,28 @@ settings:
         subheading: 'What you sign in with. Only you can change it — not even an administrator can set it for you.'
         submit: Change password
         submitting: Saving…
+    list_display:
+        avatar_scheme:
+            hint: 'Muted is the darker colours. Soft is light tints. Neutral is one quiet grey for everyone.'
+            label: 'Sender disc colours'
+            muted: 'Muted'
+            soft: 'Soft'
+            neutral: 'Neutral'
+        avatar_size:
+            hint: 'How big the circle with the initial is. Small makes the list less busy.'
+            label: 'Sender disc size'
+            small: 'Small'
+            medium: 'Medium'
+            large: 'Large'
+        heading: 'List display'
+        preview: 'What the discs look like:'
+        sender_width:
+            hint: 'Room for the sender name before it is cut off. Applies where the list shows one line per message.'
+            label: 'Sender column width'
+            normal: 'Normal'
+            wide: 'Wide'
+            wider: 'Wider'
+        subheading: 'How the rows of your mail lists look: disc size, disc colours and sender column width.'
     reading_pane:
         heading: Reading pane
         hint: 'Off shows the list and the message one at a time. Right puts the message beside the list when the window has room for both — drag the divider between them to choose how much each gets.'

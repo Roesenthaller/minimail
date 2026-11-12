@@ -157,6 +157,41 @@ final class AppearanceController extends AbstractController
     }
 
     /**
+     * Remembers how a reader likes their list rows: the sender disc's size and
+     * colours, and the width of the sender column. Any field may be sent alone;
+     * a value this build does not know becomes the default, so a stale page can
+     * never store something the CSS has no rule for.
+     */
+    #[Route('/list-display', name: 'list_display_state', methods: ['POST'])]
+    public function listDisplayState(Request $request): JsonResponse
+    {
+        $this->assertCsrf($request, 'list_display_state');
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (true === $request->request->has('avatar_size')) {
+            $user->listAvatarSize = $request->request->getString('avatar_size');
+        }
+
+        if (true === $request->request->has('avatar_scheme')) {
+            $user->listAvatarScheme = $request->request->getString('avatar_scheme');
+        }
+
+        if (true === $request->request->has('sender_width')) {
+            $user->listSenderWidth = $request->request->getString('sender_width');
+        }
+
+        $this->entityManager->flush();
+
+        return $this->json([
+            'avatar_size'   => $user->listAvatarSize,
+            'avatar_scheme' => $user->listAvatarScheme,
+            'sender_width'  => $user->listSenderWidth,
+        ]);
+    }
+
+    /**
      * Keeps the installed app's PNGs, as this user's browser drew them (#141).
      *
      * The appearance pane draws the chosen icon into four PNGs on a canvas

@@ -73,6 +73,7 @@ final class SenderAvatarExtension extends AbstractExtension
     {
         return [
             new TwigFilter('avatar_tone', $this->tone(...)),
+            new TwigFilter('avatar_tone_index', $this->toneIndex(...)),
             new TwigFilter('avatar_initial', $this->initial(...)),
             new TwigFilter('account_tone', $this->accountTone(...)),
             new TwigFilter('account_color', $this->accountColor(...)),
@@ -123,13 +124,15 @@ final class SenderAvatarExtension extends AbstractExtension
 
     public function tone(?string $seed): string
     {
+        return self::TONES[$this->toneIndex($seed)];
+    }
+
+    /** Which of the tones a sender gets, so a reader's colour scheme can restyle it by number. */
+    public function toneIndex(?string $seed): int
+    {
         $normalised = mb_strtolower(trim((string) $seed));
 
-        if ('' === $normalised) {
-            return self::TONES[0];
-        }
-
-        return self::TONES[crc32($normalised) % count(self::TONES)];
+        return '' === $normalised ? 0 : crc32($normalised) % count(self::TONES);
     }
 
     /**

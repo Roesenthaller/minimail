@@ -4441,6 +4441,7 @@ settings:
         profile: Profil
         read_receipts: Lesebestätigungen
         reading_pane: Lesebereich
+        list_display: 'Listenansicht'
         security: Sicherheit
         sharing: Teilen
         shortcuts: Tastenkürzel
@@ -4520,6 +4521,28 @@ settings:
         subheading: 'Womit du dich anmeldest. Nur du kannst es ändern — nicht einmal die Administration kann es für dich setzen.'
         submit: Passwort ändern
         submitting: Wird gespeichert…
+    list_display:
+        avatar_scheme:
+            hint: 'Gedeckt sind die dunkleren Farben. Hell sind helle Töne. Neutral ist ein ruhiges Grau für alle.'
+            label: 'Farben der Absenderkreise'
+            muted: 'Gedeckt'
+            soft: 'Hell'
+            neutral: 'Neutral'
+        avatar_size:
+            hint: 'Wie groß der Kreis mit dem Anfangsbuchstaben ist. Klein macht die Liste ruhiger.'
+            label: 'Größe der Absenderkreise'
+            small: 'Klein'
+            medium: 'Mittel'
+            large: 'Groß'
+        heading: 'Listenansicht'
+        preview: 'So sehen die Kreise aus:'
+        sender_width:
+            hint: 'Platz für den Absendernamen, bevor er abgeschnitten wird. Gilt, wo die Liste eine Zeile pro Nachricht zeigt.'
+            label: 'Breite der Absenderspalte'
+            normal: 'Normal'
+            wide: 'Breit'
+            wider: 'Breiter'
+        subheading: 'Wie die Zeilen deiner Maillisten aussehen: Größe und Farben der Kreise und Breite der Absenderspalte.'
     reading_pane:
         heading: Lesebereich
         hint: '„Aus“ zeigt Liste und Nachricht nacheinander; „Rechts“ stellt die Nachricht neben die Liste, sobald das Fenster genug Platz für beide hat – am Trenner dazwischen stellst du ein, wie viel jede bekommt.'

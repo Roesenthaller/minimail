@@ -3767,6 +3767,7 @@ settings:
         profile: '个人资料'
         read_receipts: '已读回执'
         reading_pane: '阅读面板'
+        list_display: '列表显示'
         security: '安全'
         sharing: '共享'
         shortcuts: '键盘快捷键'
@@ -3824,6 +3825,28 @@ settings:
         subheading: '用于登录的密码。只有你能更改，管理员也无法代为设置。'
         submit: '更改密码'
         submitting: "正在保存…"
+    list_display:
+        avatar_scheme:
+            hint: '深沉为较深的颜色，浅色为淡色调，中性为统一的淡灰色。'
+            label: '发件人圆圈颜色'
+            muted: '深沉'
+            soft: '浅色'
+            neutral: '中性'
+        avatar_size:
+            hint: '带首字母的圆圈有多大。选小会让列表更清爽。'
+            label: '发件人圆圈大小'
+            small: '小'
+            medium: '中'
+            large: '大'
+        heading: '列表显示'
+        preview: '圆圈的样子：'
+        sender_width:
+            hint: '发件人姓名被截断之前的空间。在列表每封邮件显示一行时生效。'
+            label: '发件人列宽度'
+            normal: '普通'
+            wide: '宽'
+            wider: '更宽'
+        subheading: '邮件列表各行的外观：头像圆圈大小、颜色和发件人列宽度。'
     reading_pane:
         heading: '阅读面板'
         hint: '关闭时，列表与邮件分别显示。选择“右侧”后，窗口空间足够时，邮件会显示在列表旁；拖动中间的分隔线可调整两侧宽度。'

@@ -16,7 +16,7 @@
     (a label list lives at /mail/label/{id}) — both for the reasons given in the
     sort menu.
 
-    The widths mirror the row's: its avatar is w-7 and its sender w-40, with a
+    The widths mirror the row's: its avatar and sender widths come from --avatar-size and --sender-col (Settings, List display), with a
     gap-3 between everything. The subject heading sits over the subject and the
     preview together, which share one flexible space and have no edge of their
     own to line up with.
@@ -55,9 +55,9 @@
 <div data-column-headers
      role="row"
      class="hidden row-line:flex items-center gap-3 pl-3 pr-4 py-1 border-b border-line bg-surface">
-    <span class="w-7 shrink-0" aria-hidden="true"></span>
+    <span class="w-[var(--avatar-size,1.75rem)] shrink-0" aria-hidden="true"></span>
 
-    <div class="w-40 shrink-0 min-w-0" role="columnheader" aria-sort="{{ current.column == 'sender' ? (current.isDescending ? 'descending' : 'ascending') : 'none' }}">
+    <div class="w-[var(--sender-col,10rem)] shrink-0 min-w-0" role="columnheader" aria-sort="{{ current.column == 'sender' ? (current.isDescending ? 'descending' : 'ascending') : 'none' }}">
         {{ heading('sender', current, route, base_params, '') }}
     </div>
 

@@ -4230,6 +4230,7 @@ settings:
         profile: Yer colours
         read_receipts: Read-marks
         reading_pane: Spyglass deck
+        list_display: 'Deck lookin''s'
         security: The ship's lock
         sharing: Sharing
         shortcuts: Keyboard shortcuts
@@ -4298,6 +4299,28 @@ settings:
         subheading: 'What ye board with. Only ye can change it — not even a quartermaster may set it for ye.'
         submit: Change th' secret word
         submitting: Stowin'…
+    list_display:
+        avatar_scheme:
+            hint: 'Muted be the darker colours. Soft be light tints. Neutral be one quiet grey for all hands.'
+            label: 'Sender disc colours'
+            muted: 'Muted'
+            soft: 'Soft'
+            neutral: 'Neutral'
+        avatar_size:
+            hint: 'How big the circle with the letter is. Small makes the list less busy.'
+            label: 'Sender disc size'
+            small: 'Small'
+            medium: 'Medium'
+            large: 'Large'
+        heading: 'Deck lookin''s'
+        preview: 'What the discs look like:'
+        sender_width:
+            hint: 'Room for the sender name before it be cut off. Applies where the list shows one line per message.'
+            label: 'Sender column width'
+            normal: 'Normal'
+            wide: 'Wide'
+            wider: 'Wider'
+        subheading: 'How the rows o'' yer mail lists look: disc size, disc colours and sender column width.'
     reading_pane:
         heading: Spyglass deck
         hint: 'Stowed shows the list an'' the letter one at a time; Starboard lays the letter beside the list when the ship has room for both — drag the rail between ''em to say how much deck each gets.'

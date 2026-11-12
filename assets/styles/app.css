@@ -6058,3 +6058,51 @@ li[data-swipe-side] > [data-swipe-content] {
 [data-sheet-picker-scope] [data-ui--dropdown-target="menu"] {
     pointer-events: auto;
 }
+
+/*
+   List display: the reader's own choices for how a row looks (Settings, List
+   display), set as data attributes on <html> by the layout and changed live by
+   settings--list-display. Medium and Normal are what the list was before these
+   existed, so they set nothing.
+
+   --avatar-size is the disc's width and height, --sender-col the width of the
+   sender column in a one-line row, which the column headings follow.
+*/
+html[data-avatar-size="small"] { --avatar-size: 1.375rem; }
+html[data-avatar-size="large"] { --avatar-size: 2.25rem; }
+html[data-avatar-size="small"] [data-row-avatar-face] { font-size: 0.625rem; }
+html[data-avatar-size="small"] [data-row-avatar-face] img { width: 0.75rem; height: 0.75rem; }
+html[data-avatar-size="large"] [data-row-avatar-face] { font-size: 0.875rem; }
+html[data-avatar-size="large"] [data-row-avatar-face] img { width: 1.25rem; height: 1.25rem; }
+
+html[data-sender-width="wide"]  { --sender-col: 14rem; }
+html[data-sender-width="wider"] { --sender-col: 18rem; }
+
+/*
+   Colour schemes for the discs. Muted is the tone classes the row already
+   carries, so it needs no rule. Soft is the same eight hues as light tints with
+   dark lettering, which is what the settings preview always showed; Neutral is
+   one quiet grey for every sender, for a list where colour is noise. The tone
+   number is the sender's, from SenderAvatarExtension::toneIndex, so a sender
+   keeps their hue when the scheme changes.
+*/
+html[data-avatar-scheme="neutral"] [data-row-avatar-face] {
+    background-color: rgb(var(--rgb-sunken));
+    color: rgb(var(--rgb-ink-muted));
+}
+html[data-avatar-scheme="soft"] [data-row-avatar-face][data-tone="0"] { --av-h: 18; }
+html[data-avatar-scheme="soft"] [data-row-avatar-face][data-tone="1"] { --av-h: 150; }
+html[data-avatar-scheme="soft"] [data-row-avatar-face][data-tone="2"] { --av-h: 210; }
+html[data-avatar-scheme="soft"] [data-row-avatar-face][data-tone="3"] { --av-h: 250; }
+html[data-avatar-scheme="soft"] [data-row-avatar-face][data-tone="4"] { --av-h: 55; }
+html[data-avatar-scheme="soft"] [data-row-avatar-face][data-tone="5"] { --av-h: 330; }
+html[data-avatar-scheme="soft"] [data-row-avatar-face][data-tone="6"] { --av-h: 178; }
+html[data-avatar-scheme="soft"] [data-row-avatar-face][data-tone="7"] { --av-h: 38; }
+html[data-avatar-scheme="soft"] [data-row-avatar-face] {
+    background-color: hsl(var(--av-h) 75% 88%);
+    color: hsl(var(--av-h) 55% 28%);
+}
+html.dark[data-avatar-scheme="soft"] [data-row-avatar-face] {
+    background-color: hsl(var(--av-h) 45% 24%);
+    color: hsl(var(--av-h) 80% 85%);
+}

@@ -429,9 +429,9 @@ be a worse regression than the one this feature fixes.
                does from the initial. See mail--sender-logo and
                SenderLogoController. #}
             {% set logoUrl = sender_logo_url(senderSeed) %}
-            <span data-row-avatar-face
+            <span data-row-avatar-face data-tone="{{ senderSeed|avatar_tone_index }}"
                   class="relative flex items-center justify-center rounded-full
-                         w-7 h-7 text-xs font-semibold select-none
+                         w-[var(--avatar-size,1.75rem)] h-[var(--avatar-size,1.75rem)] text-xs font-semibold select-none
                          transition-opacity
                          peer-checked:opacity-0 group-hover/avatar:opacity-0
                          {{ senderSeed|avatar_tone }}"
@@ -479,14 +479,14 @@ be a worse regression than the one this feature fixes.
            again by `row-line:`. #}
         <div data-row-layout
              class="flex-1 min-w-0 flex flex-col
-                    row-band:grid row-band:grid-cols-[10rem_minmax(0,1fr)] row-band:gap-x-4 row-band:gap-y-1
+                    row-band:grid row-band:grid-cols-[var(--sender-col,10rem)_minmax(0,1fr)] row-band:gap-x-4 row-band:gap-y-1
                     row-line:flex-row row-line:items-center row-line:gap-4">
 
             {# Row 1 (three lines) / first cell of row 1 (two lines) / sender
                column (one line). `min-w-0` is for the middle one: a grid item
                will not shrink under its content without it, and a long sender
                would push the column past its 10rem. #}
-            <div data-row-sender class="min-w-0 flex items-center justify-between gap-2 row-line:justify-start row-line:w-40 row-line:flex-shrink-0">
+            <div data-row-sender class="min-w-0 flex items-center justify-between gap-2 row-line:justify-start row-line:w-[var(--sender-col,10rem)] row-line:flex-shrink-0">
                 {# Sender and its marker travel together in one group, so the
                    badge sits to the LEFT of the name at both container widths.
                    Hanging it off the outer flex instead would have put it at

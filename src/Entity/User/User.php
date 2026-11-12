@@ -2,6 +2,7 @@
 
 namespace App\Entity\User;
 
+use App\Domain\Helper\ListDisplay;
 use App\Domain\Enum\Calendar\CalendarPaneMode;
 use App\Domain\Enum\Calendar\CalendarSwitchSkip;
 use App\Domain\Enum\Calendar\CalendarView;
@@ -749,6 +750,16 @@ class User extends UserEntityModel implements UserInterface, PasswordAuthenticat
     public const string SETTING_THREAD_NEWEST_FIRST = 'reading.newest_first';
 
     /**
+     * How the rows of a list look, per reader: the size of the sender disc, the
+     * colours it is drawn in, and how wide the sender column is. Kept apart from
+     * the appearance payload, which becomes an exported theme: these are about
+     * how dense a list is to read, not about a palette. See ListDisplay.
+     */
+    public const string SETTING_LIST_AVATAR_SIZE   = 'list.avatar_size';
+    public const string SETTING_LIST_AVATAR_SCHEME = 'list.avatar_scheme';
+    public const string SETTING_LIST_SENDER_WIDTH  = 'list.sender_width';
+
+    /**
      * The accounts whose folder lists are expanded in the sidebar, as a list of
      * account ids. Replaces SETTING_SIDEBAR_ACCOUNT, which could hold only one
      * and so closed the first account when a second was opened. The old key is
@@ -1173,6 +1184,30 @@ class User extends UserEntityModel implements UserInterface, PasswordAuthenticat
         get => ReadingPaneMode::fromSetting($this->getSetting(self::SETTING_READING_PANE_MODE));
         set (ReadingPaneMode $mode) {
             $this->setSetting(self::SETTING_READING_PANE_MODE, $mode->value);
+        }
+    }
+
+    /** Virtual, out of the settings bag — see SETTING_LIST_AVATAR_SIZE. */
+    public string $listAvatarSize {
+        get => ListDisplay::choose(ListDisplay::AVATAR_SIZES, $this->getSetting(self::SETTING_LIST_AVATAR_SIZE));
+        set (string $value) {
+            $this->setSetting(self::SETTING_LIST_AVATAR_SIZE, ListDisplay::choose(ListDisplay::AVATAR_SIZES, $value));
+        }
+    }
+
+    /** Virtual, out of the settings bag — see SETTING_LIST_AVATAR_SCHEME. */
+    public string $listAvatarScheme {
+        get => ListDisplay::choose(ListDisplay::AVATAR_SCHEMES, $this->getSetting(self::SETTING_LIST_AVATAR_SCHEME));
+        set (string $value) {
+            $this->setSetting(self::SETTING_LIST_AVATAR_SCHEME, ListDisplay::choose(ListDisplay::AVATAR_SCHEMES, $value));
+        }
+    }
+
+    /** Virtual, out of the settings bag — see SETTING_LIST_SENDER_WIDTH. */
+    public string $listSenderWidth {
+        get => ListDisplay::choose(ListDisplay::SENDER_WIDTHS, $this->getSetting(self::SETTING_LIST_SENDER_WIDTH));
+        set (string $value) {
+            $this->setSetting(self::SETTING_LIST_SENDER_WIDTH, ListDisplay::choose(ListDisplay::SENDER_WIDTHS, $value));
         }
     }
 

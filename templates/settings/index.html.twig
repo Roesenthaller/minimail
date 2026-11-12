@@ -199,6 +199,7 @@ the links that leave the app (a provider's consent screen, an .ics download).
                                     ] },
                                     { label: 'settings.nav.group.features', items: [
                                         { section: 'reading-pane',  icon: 'fa-solid fa-table-columns', label: 'settings.nav.reading_pane' },
+                                        { section: 'list-display',  icon: 'fa-solid fa-list',          label: 'settings.nav.list_display' },
                                         { section: 'shortcuts',     icon: 'fa-regular fa-keyboard' },
                                     ] },
                                     { label: 'settings.nav.group.access', items: [
@@ -496,6 +497,19 @@ the links that leave the app (a provider's consent screen, an .ics download).
                                                 {% include 'settings/_reading_pane.html.twig' with {
                                                     mode: app.user.readingPaneMode,
                                                     newest_first: app.user.threadNewestFirst,
+                                                } only %}
+                                            {% endblock %}
+                                        {% endembed %}
+                                    {% elseif section == 'list-display' %}
+                                        {% embed 'settings/_card.html.twig' with {
+                                            heading:    'settings.list_display.heading'|trans,
+                                            subheading: 'settings.list_display.subheading'|trans,
+                                        } %}
+                                            {% block body %}
+                                                {% include 'settings/_list_display.html.twig' with {
+                                                    avatar_size:   app.user.listAvatarSize,
+                                                    avatar_scheme: app.user.listAvatarScheme,
+                                                    sender_width:  app.user.listSenderWidth,
                                                 } only %}
                                             {% endblock %}
                                         {% endembed %}

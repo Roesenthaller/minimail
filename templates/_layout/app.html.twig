@@ -43,6 +43,13 @@
          line. A container query cannot read a custom property. See the
          `row-line:` variant in app.css. #}
       data-list-preview-lines="{{ appearance().previewLines }}"
+      {# How a reader likes their list rows (Settings, List display). Read by
+         CSS in app.css; nothing here reaches the stylesheet as a class name. #}
+      {% if app.user is not null and app.user.listAvatarSize is defined %}
+      data-avatar-size="{{ app.user.listAvatarSize }}"
+      data-avatar-scheme="{{ app.user.listAvatarScheme }}"
+      data-sender-width="{{ app.user.listSenderWidth }}"
+      {% endif %}
       style="{{ appearance_vars() }}">
 <head>
     <meta charset="UTF-8">

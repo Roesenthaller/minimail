@@ -4478,6 +4478,7 @@ settings:
         profile: Profil
         read_receipts: Accusés de lecture
         reading_pane: Volet de lecture
+        list_display: 'Affichage de la liste'
         security: Sécurité
         sharing: Partage
         shortcuts: Raccourcis clavier
@@ -4555,6 +4556,28 @@ settings:
         subheading: 'Ce avec quoi vous vous connectez. Vous seul pouvez le changer — même un administrateur ne peut pas le définir à votre place.'
         submit: Changer le mot de passe
         submitting: Enregistrement…
+    list_display:
+        avatar_scheme:
+            hint: 'Sourdes : les couleurs sombres. Douces : des teintes claires. Neutres : un seul gris discret pour tous.'
+            label: 'Couleurs des pastilles'
+            muted: 'Sourdes'
+            soft: 'Douces'
+            neutral: 'Neutres'
+        avatar_size:
+            hint: 'La taille du cercle avec l''initiale. Petite allège la liste.'
+            label: 'Taille des pastilles d''expéditeur'
+            small: 'Petite'
+            medium: 'Moyenne'
+            large: 'Grande'
+        heading: 'Affichage de la liste'
+        preview: 'Aperçu des pastilles :'
+        sender_width:
+            hint: 'La place pour le nom de l''expéditeur avant qu''il soit coupé. S''applique quand la liste affiche une ligne par message.'
+            label: 'Largeur de la colonne expéditeur'
+            normal: 'Normale'
+            wide: 'Large'
+            wider: 'Plus large'
+        subheading: 'L''apparence des lignes de vos listes : taille et couleurs des pastilles, largeur de la colonne expéditeur.'
     reading_pane:
         heading: Volet de lecture
         hint: 'Désactivé affiche la liste et le message l’un après l’autre. À droite place le message à côté de la liste quand la fenêtre a la place pour les deux — faites glisser le séparateur pour choisir la part de chacun.'
