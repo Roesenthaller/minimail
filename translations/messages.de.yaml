@@ -41,8 +41,8 @@ account:
     primary_set: Primäres Konto geändert
     removed: Konto entfernt
     tabs:
-        imap: IMAP / SMTP
-        oauth: OAuth
+        imap: 'Passwort (IMAP / SMTP)'
+        oauth: 'Mit Google oder Microsoft anmelden'
     test:
         button: Verbindung testen
         hint:

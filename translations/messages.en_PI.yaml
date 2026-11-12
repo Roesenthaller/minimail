@@ -41,8 +41,8 @@ account:
     primary_set: A new flagship be named
     removed: Crew member put ashore
     tabs:
-        imap: IMAP / SMTP
-        oauth: OAuth
+        imap: 'Password (IMAP / SMTP)'
+        oauth: 'Sign in with Google or Microsoft'
     test:
         button: Test the riggin'
         hint:

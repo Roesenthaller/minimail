@@ -41,8 +41,8 @@ account:
     primary_set: 主账户已更改
     removed: 账户已移除
     tabs:
-        imap: 'IMAP / SMTP'
-        oauth: OAuth
+        imap: '密码 (IMAP / SMTP)'
+        oauth: '使用 Google 或 Microsoft 登录'
     test:
         button: 测试连接
         hint:

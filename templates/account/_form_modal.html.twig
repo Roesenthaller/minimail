@@ -16,13 +16,13 @@
         }) }}
 
         {# ── Tab bar ─────────────────────────────────────────────────────── #}
-        <div class="flex border-b border-line px-5 -mt-px bg-sunken">
+        <div class="flex gap-6 border-b border-line px-5 -mt-px bg-sunken">
             <button
                 type="button"
                 data-settings--account-form-target="tab"
                 data-action="click->settings--account-form#switchTab"
                 data-panel="imap"
-                class="tab-btn active-tab px-1 py-3 mr-5px text-sm font-medium border-b-2 transition-colors duration-100 cursor-pointer"
+                class="tab-btn active-tab px-1 py-3 text-sm font-medium border-b-2 transition-colors duration-100 cursor-pointer"
             >{{ 'account.tabs.imap'|trans }}</button>
             <button
                 type="button"
