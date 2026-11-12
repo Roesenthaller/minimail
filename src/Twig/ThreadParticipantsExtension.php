@@ -30,6 +30,7 @@ final class ThreadParticipantsExtension extends AbstractExtension
         return [
             new TwigFunction('thread_participants', $this->forThread(...)),
             new TwigFunction('thread_row', $this->rows->for(...)),
+            new TwigFunction('message_files', $this->rows->filesOf(...)),
         ];
     }
 

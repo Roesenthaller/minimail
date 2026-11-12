@@ -2773,7 +2773,9 @@ message:
 messages:
     empty: 'No letters yet.'
     heading: 'Letters'
+    heading_sent: 'Sent letters'
     hint: 'Every letter that has come aboard, one line each, newest first. No parleys.'
+    hint_sent: 'Every letter ye sent from this account, one row each, newest first. No conversations.'
 
 mercure:
     status:
@@ -4659,6 +4661,7 @@ sidebar:
         drafts: Scrolls in the works
         inbox: Bottles washed ashore
         messages: 'Letters'
+        messages_sent: 'Sent letters'
         more: More
         sent: Cast off
         snoozed: Kept below deck

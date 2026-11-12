@@ -2909,7 +2909,9 @@ message:
 messages:
     empty: 'No messages yet.'
     heading: 'Messages'
+    heading_sent: 'Sent messages'
     hint: 'Every email that has arrived, one row each, newest first. No conversations.'
+    hint_sent: 'Every email you have sent from this account, one row each, newest first. No conversations.'
 
 mercure:
     status:
@@ -4858,6 +4860,7 @@ sidebar:
         drafts: Drafts
         inbox: Inbox
         messages: 'Messages'
+        messages_sent: 'Sent messages'
         more: More
         sent: Sent
         snoozed: Snoozed

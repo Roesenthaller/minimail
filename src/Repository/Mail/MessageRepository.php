@@ -8,6 +8,7 @@ use App\Domain\Enum\Mail\MessageCategory;
 use App\Domain\Enum\Mail\SendFailure;
 use App\Domain\Enum\Mail\MailboxSpecialUse;
 use App\Domain\Helper\CalendarAttachment;
+use App\Domain\Enum\Mail\ListSortOrder;
 use App\Entity\Mail\Account;
 use App\Entity\Mail\Mailbox;
 use App\Entity\Mail\Message;
@@ -458,12 +459,12 @@ class MessageRepository extends ServiceEntityRepository
      *
      * @return list<Message>
      */
-    public function findReceivedForUser(User $user, int $page, int $perPage, bool $unreadOnly = false, ?Account $account = null): array
+    public function findReceivedForUser(User $user, int $page, int $perPage, bool $unreadOnly = false, ?Account $account = null, ?ListSortOrder $sort = null, bool $sent = false): array
     {
-        return $this->receivedQuery($user, $unreadOnly, $account)
-            ->select('m')
-            ->orderBy('m.receivedAt', 'DESC')
-            ->addOrderBy('m.id', 'DESC')
+        $qb = $this->receivedQuery($user, $unreadOnly, $account, $sent)->select('m');
+        $this->sortMessages($qb, $sort ?? ListSortOrder::Newest, $sent);
+
+        return $qb
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage)
             ->getQuery()
@@ -471,27 +472,56 @@ class MessageRepository extends ServiceEntityRepository
     }
 
     /** The same list's length, for the pager. */
-    public function countReceivedForUser(User $user, bool $unreadOnly = false, ?Account $account = null): int
+    public function countReceivedForUser(User $user, bool $unreadOnly = false, ?Account $account = null, bool $sent = false): int
     {
-        return (int) $this->receivedQuery($user, $unreadOnly, $account)
+        return (int) $this->receivedQuery($user, $unreadOnly, $account, $sent)
             ->select('COUNT(m.id)')
             ->getQuery()
             ->getSingleScalarResult();
     }
 
-    private function receivedQuery(User $user, bool $unreadOnly, ?Account $account = null): \Doctrine\ORM\QueryBuilder
+    /**
+     * The column headings' orders, applied to a list of single messages. The
+     * id is the last key so a page boundary never repeats or skips a row.
+     */
+    private function sortMessages(\Doctrine\ORM\QueryBuilder $qb, ListSortOrder $sort, bool $sent): void
+    {
+        $date = $sent ? 'm.sentAt' : 'm.receivedAt';
+        $dir  = $sort->isDescending() ? 'DESC' : 'ASC';
+
+        switch ($sort->column()) {
+            case 'sender':
+                $qb->addSelect('LOWER(COALESCE(m.fromName, m.fromAddress)) AS HIDDEN sortKey')->orderBy('sortKey', $dir);
+                break;
+            case 'subject':
+                $qb->addSelect('LOWER(COALESCE(m.subject, \'\')) AS HIDDEN sortKey')->orderBy('sortKey', $dir);
+                break;
+            case 'attachments':
+                $qb->addSelect('CASE WHEN m.hasAttachments = true THEN 1 ELSE 0 END AS HIDDEN sortKey')->orderBy('sortKey', $dir);
+                break;
+            default:
+                $qb->orderBy($date, $dir);
+                $qb->addOrderBy('m.id', $dir);
+
+                return;
+        }
+
+        $qb->addOrderBy($date, 'DESC')->addOrderBy('m.id', 'DESC');
+    }
+
+    private function receivedQuery(User $user, bool $unreadOnly, ?Account $account = null, bool $sent = false): \Doctrine\ORM\QueryBuilder
     {
         $qb = $this->createQueryBuilder('m')
             ->join('m.account', 'a')
             ->leftJoin('m.thread', 't')
             ->where('a.usr = :user')
             ->andWhere('a.isActive = true')
-            ->andWhere('m.receivedAt IS NOT NULL')
+            ->andWhere($sent ? 'm.sentAt IS NOT NULL' : 'm.receivedAt IS NOT NULL')
             ->andWhere('(t.id IS NULL OR t.binned = false)')
-            ->andWhere('m.id IN (SELECT inboxed.id FROM ' . Message::class
-                . ' inboxed JOIN inboxed.labels inboxLabel WHERE inboxLabel.role = :inbox)')
+            ->andWhere('m.id IN (SELECT boxed.id FROM ' . Message::class
+                . ' boxed JOIN boxed.labels boxLabel WHERE boxLabel.role = :role)')
             ->setParameter('user', $user)
-            ->setParameter('inbox', LabelRole::Inbox);
+            ->setParameter('role', $sent ? LabelRole::Sent : LabelRole::Inbox);
 
         if (null !== $account) {
             $qb->andWhere('a = :account')->setParameter('account', $account);

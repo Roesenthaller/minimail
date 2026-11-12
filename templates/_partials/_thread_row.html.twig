@@ -195,10 +195,20 @@ Threads only. A bare Message row is a message, and only a conversation arrives.
     {% set unread = item.seenAt is null %}
     {% set subject = item.subject ?: ('thread_row.no_subject'|trans) %}
     {% set starred = item.starredAt is not null %}
-    {% set date = item.receivedAt %}
+    {% set date = item.receivedAt ?? item.sentAt %}
     {% set count = 1 %}
     {% set sender = item.fromName ?: item.fromAddress %}
     {% set senderSeed = item.fromAddress ?: sender %}
+    {# The Sent messages list: who it went to, as the Sent conversation list does. #}
+    {% if sent_scope %}
+        {% set recipients = (item.toAddresses ?? [])
+            |map(r => r.name ?: r.address)
+            |filter(r => r is not empty) %}
+        {% set sender = recipients|length > 0
+            ? ('thread_row.to'|trans({ '%recipients%': recipients|join(', ') }))
+            : ('thread_row.no_recipient'|trans) %}
+    {% endif %}
+    {% set rowFiles = message_files(item) %}
     {# Same source as the thread branch above, so the two cannot drift. #}
     {% set snippet = mail_snippet(item)|slice(0, 100) %}
     {% set encrypted = item.crypto is not null and item.crypto.encrypted %}
@@ -733,8 +743,9 @@ be a worse regression than the one this feature fixes.
                            up width first. Conversation rows only — `row` is
                            what thread_row() answered, and a bare Message row
                            (a search hit, a draft) never asked. #}
-                        {% if row is defined and row.attachments is not empty %}
-                            {% include '_partials/_row_attachments.html.twig' with { attachments: row.attachments } only %}
+                        {% set chipFiles = row is defined ? row.attachments : (rowFiles ?? []) %}
+                        {% if chipFiles is not empty %}
+                            {% include '_partials/_row_attachments.html.twig' with { attachments: chipFiles } only %}
                         {% endif %}
                     </span>
                 </div>

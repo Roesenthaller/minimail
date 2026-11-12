@@ -639,37 +639,51 @@ final class MailController extends AbstractController
     #[Route('/messages', name: 'messages')]
     public function messages(Request $request): Response
     {
-        return $this->messagesList($request, null);
+        return $this->messagesList($request, null, false);
     }
 
     /**
      * The same flat list for one account, which is how it is reached from the
      * sidebar: two mailboxes mixed into one list are hard to tell apart.
      */
-    #[Route('/account/{account}/messages', name: 'account_messages', requirements: ['account' => '\d+'])]
+    #[Route('/account/{account}/messages', name: 'account_messages', requirements: ['account' => '\\d+'])]
     public function accountMessages(Account $account, Request $request): Response
     {
         $this->denyAccessUnlessGranted(OwnershipVoter::OWN, $account);
 
-        return $this->messagesList($request, $account);
+        return $this->messagesList($request, $account, false);
     }
 
-    private function messagesList(Request $request, ?Account $account): Response
+    /** What this account has sent, one row per email. */
+    #[Route('/account/{account}/messages/sent', name: 'account_messages_sent', requirements: ['account' => '\\d+'])]
+    public function accountSentMessages(Account $account, Request $request): Response
+    {
+        $this->denyAccessUnlessGranted(OwnershipVoter::OWN, $account);
+
+        return $this->messagesList($request, $account, true);
+    }
+
+    private function messagesList(Request $request, ?Account $account, bool $sent): Response
     {
         /** @var User $user */
         $user       = $this->getUser();
         $unreadOnly = $this->unreadOnly($request);
-        $total      = $this->messageRepository->countReceivedForUser($user, $unreadOnly, $account);
+        $total      = $this->messageRepository->countReceivedForUser($user, $unreadOnly, $account, $sent);
         $page       = $this->pageOrRedirect($request, $total);
 
         if ($page instanceof RedirectResponse) {
             return $page;
         }
 
-        $messages = $this->messageRepository->findReceivedForUser($user, $page, self::PER_PAGE, $unreadOnly, $account);
+        $sort     = $this->listSort($request);
+        $messages = $this->messageRepository->findReceivedForUser($user, $page, self::PER_PAGE, $unreadOnly, $account, $sort, $sent);
+
+        $this->threadRows->preloadMessages($messages);
 
         return $this->render('mail/messages.html.twig', [
             'account'     => $account,
+            'sent'        => $sent,
+            'list_sort'   => $sort,
             'messages'    => $messages,
             'page'        => $page,
             'total'       => $total,

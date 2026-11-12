@@ -2573,7 +2573,9 @@ message:
 messages:
     empty: '暂无邮件。'
     heading: '邮件'
+    heading_sent: '已发邮件'
     hint: '每封收到的邮件各占一行，最新的在前，不按会话分组。'
+    hint_sent: '此账户发出的每封邮件，每封一行，最新的在前。没有会话。'
 
 mercure:
     status:
@@ -4162,6 +4164,7 @@ sidebar:
         drafts: '草稿'
         inbox: '收件箱'
         messages: '邮件'
+        messages_sent: '已发邮件'
         more: '更多'
         sent: '已发送'
         snoozed: '已设稍后提醒'

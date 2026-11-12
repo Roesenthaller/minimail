@@ -37,6 +37,15 @@
            data-turbo-prefetch="false"
            class="flex-1 min-w-0 truncate">{{ 'sidebar.nav.messages'|trans }}</a>
     </div>
+    {% set sentMessagesHref = path('app_mail_account_messages_sent', { account: account.id }) %}
+    <div class="nav-item flex items-center text-xs {{ sidebar_row_state(sentMessagesHref) }}" data-nav-tier="tree" style="--label-depth: 12px">
+        <a href="{{ sentMessagesHref }}"
+           data-ui--sidebar-target="link"
+           data-turbo-frame="_top"
+           {{ sidebarMacros.list_frame() }}
+           data-turbo-prefetch="false"
+           class="flex-1 min-w-0 truncate">{{ 'sidebar.nav.messages_sent'|trans }}</a>
+    </div>
     {# This account's All Mail, first among its folders: everything of this
        account's outside Spam and the bin. Shown while the All Mail label is —
        one switch for this row and the one across every account, so turning

@@ -63,6 +63,33 @@ class MessagePartRepository extends ServiceEntityRepository
     }
 
     /**
+     * The same listed files, asked for by message instead of by thread: what
+     * the flat Messages list needs, where a row is one email and not a
+     * conversation.
+     *
+     * @param list<int> $messageIds
+     *
+     * @return list<array{id: int, messageId: int, filename: ?string, contentType: ?string, size: ?int, sealed: bool}>
+     */
+    public function findListedForMessages(array $messageIds): array
+    {
+        if ([] === $messageIds) {
+            return [];
+        }
+
+        /** @var list<array{id: int, messageId: int, filename: ?string, contentType: ?string, size: ?int, sealed: bool}> */
+        return $this->createQueryBuilder('p')
+            ->select('p.id', 'IDENTITY(p.message) AS messageId', 'p.filename', 'p.contentType', 'p.size', 'p.sealed')
+            ->where('p.message IN (:messages)')
+            ->andWhere('(p.isInline IS NULL OR p.isInline = false)')
+            ->andWhere('p.senderKeyFingerprint IS NULL')
+            ->setParameter('messages', $messageIds)
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+    /**
      * Every message that has at least one part, as ids.
      *
      * DISTINCT over a projection, which Doctrine's API has no form of: findBy()

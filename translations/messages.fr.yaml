@@ -2926,7 +2926,9 @@ message:
 messages:
     empty: 'Aucun message pour l’instant.'
     heading: 'Messages'
+    heading_sent: 'Messages envoyés'
     hint: 'Chaque e-mail reçu sur sa propre ligne, le plus récent en premier. Sans conversations.'
+    hint_sent: 'Chaque e-mail envoyé depuis ce compte, une ligne chacun, du plus récent au plus ancien. Pas de conversations.'
 
 mercure:
     status:
@@ -4894,6 +4896,7 @@ sidebar:
         drafts: Brouillons
         inbox: Boîte de réception
         messages: 'Messages'
+        messages_sent: 'Messages envoyés'
         more: Plus
         sent: Envoyés
         snoozed: En attente

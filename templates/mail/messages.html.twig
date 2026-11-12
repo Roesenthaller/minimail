@@ -4,12 +4,12 @@
 
 {% block list_scope %}messages{% endblock %}
 
-{% block title %}{{ 'messages.heading'|trans }} — {{ 'app.name'|trans }}{% endblock %}
+{% block title %}{{ (sent|default(false) ? 'messages.heading_sent' : 'messages.heading')|trans }} — {{ 'app.name'|trans }}{% endblock %}
 
 {% block inbox_tabs %}
     <div class="px-4 py-2.5 border-b border-line">
-        <h2 class="text-sm font-semibold text-ink-soft">{{ 'messages.heading'|trans }}{% if account is not null %} <span class="font-normal text-ink-faint">{{ account.email|default(account.name|default('')) }}</span>{% endif %}</h2>
-        <p class="text-[11px] text-ink-faint mt-0.5">{{ 'messages.hint'|trans }}</p>
+        <h2 class="text-sm font-semibold text-ink-soft">{{ (sent|default(false) ? 'messages.heading_sent' : 'messages.heading')|trans }}{% if account is not null %} <span class="font-normal text-ink-faint">{{ account.email|default(account.name|default('')) }}</span>{% endif %}</h2>
+        <p class="text-[11px] text-ink-faint mt-0.5">{{ (sent|default(false) ? 'messages.hint_sent' : 'messages.hint')|trans }}</p>
     </div>
 {% endblock %}
 
@@ -20,7 +20,7 @@
         </li>
     {% else %}
         {% for message in messages %}
-            {% include '_partials/_thread_row.html.twig' with { message: message } %}
+            {% include '_partials/_thread_row.html.twig' with { message: message, sent_scope: sent|default(false) } %}
         {% endfor %}
     {% endif %}
 {% endblock %}

@@ -6116,9 +6116,9 @@ html.dark[data-avatar-scheme="soft"] [data-row-avatar-face] {
 */
 html[data-avatar-scheme="letter"] [data-row-avatar-face] {
     --lt-h: calc(var(--lt-i, 0) * 13.85);
-    --lt-l: 36%;
-    background-color: hsl(var(--lt-h) 58% var(--lt-l));
-    color: #fff;
+    --lt-l: 76%;
+    background-color: hsl(var(--lt-h) 52% var(--lt-l));
+    color: hsl(var(--lt-h) 45% 20%);
 }
 html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="1"],
 html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="3"],
@@ -6132,10 +6132,11 @@ html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="17"],
 html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="19"],
 html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="21"],
 html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="23"],
-html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="25"] { --lt-l: 46%; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="25"] { --lt-l: 84%; }
 html.dark[data-avatar-scheme="letter"] [data-row-avatar-face] {
-    --lt-l: 68%;
-    color: #111;
+    --lt-l: 34%;
+    background-color: hsl(var(--lt-h) 30% var(--lt-l));
+    color: hsl(var(--lt-h) 50% 88%);
 }
 html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="1"],
 html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="3"],
@@ -6149,7 +6150,7 @@ html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="17"],
 html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="19"],
 html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="21"],
 html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="23"],
-html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="25"] { --lt-l: 58%; }
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="25"] { --lt-l: 42%; }
 html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="26"] {
     background-color: rgb(var(--rgb-sunken));
     color: rgb(var(--rgb-ink-muted));

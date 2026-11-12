@@ -82,7 +82,8 @@ final class ThreadRows implements ResetInterface
 
     public function reset(): void
     {
-        $this->rows = [];
+        $this->rows         = [];
+        $this->messageFiles = [];
     }
 
     /**
@@ -113,6 +114,47 @@ final class ThreadRows implements ResetInterface
         }
 
         $this->load($ids);
+    }
+
+    /** @var array<int, list<ThreadRowAttachment>> message id => its chips */
+    private array $messageFiles = [];
+
+    /**
+     * The files of one page of flat Message rows, in one query. A conversation
+     * row gets its chips from preload(); a row that is one email has no thread
+     * to ask about, and without this its attachments silently vanished.
+     *
+     * @param list<\App\Entity\Mail\Message> $messages
+     */
+    public function preloadMessages(array $messages): void
+    {
+        $ids = [];
+
+        foreach ($messages as $message) {
+            if (null !== $message->id && true === $message->hasAttachments && false === $message->isDraft) {
+                $ids[] = $message->id;
+            }
+        }
+
+        $byMessage = [];
+
+        foreach ($this->parts->findListedForMessages($ids) as $part) {
+            $byMessage[(int) $part['messageId']][] = $part;
+        }
+
+        foreach ($messages as $message) {
+            if (null !== $message->id) {
+                $this->messageFiles[$message->id] = $this->attachmentsOf($byMessage[$message->id] ?? []);
+            }
+        }
+    }
+
+    /**
+     * @return list<ThreadRowAttachment>
+     */
+    public function filesOf(\App\Entity\Mail\Message $message): array
+    {
+        return null === $message->id ? [] : ($this->messageFiles[$message->id] ?? []);
     }
 
     public function for(MessageThread $thread): ThreadRow
