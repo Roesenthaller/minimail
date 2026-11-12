@@ -1,0 +1,21 @@
+# Runs this checkout as a production stack, on an image built locally from it
+# instead of the published one. Same database, volumes and settings as
+# compose.yaml; only the application image changes.
+#
+#   docker build --target frankenphp_prod -t pl_mail-local:prod .
+#   docker compose -f compose.yaml -f compose.local-prod.yaml up -d --wait
+#
+# Rebuild the image after any change to the code.
+
+services:
+  secrets-init:
+    image: pl_mail-local:prod
+    pull_policy: never
+
+  php:
+    image: pl_mail-local:prod
+    pull_policy: never
+
+  worker:
+    image: pl_mail-local:prod
+    pull_policy: never
