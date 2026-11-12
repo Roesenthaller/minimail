@@ -37,6 +37,7 @@ final readonly class MediaAttachment
     private const array IMAGE_TYPES = [
         'image/jpeg',
         'image/pjpeg',
+        'image/jpg',
         'image/png',
         'image/apng',
         'image/gif',

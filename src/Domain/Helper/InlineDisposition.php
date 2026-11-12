@@ -38,6 +38,8 @@ final class InlineDisposition
     public const array INLINE_TYPES = [
         'image/jpeg',
         'image/pjpeg',
+        // Not a registered type, but some senders label their JPEGs this way.
+        'image/jpg',
         'image/png',
         'image/apng',
         'image/gif',
