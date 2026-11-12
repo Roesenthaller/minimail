@@ -787,7 +787,32 @@ export default class extends Controller {
 
         this._addRecent(q);
         this._closeDropdown();
-        this._navigate(q);
+        this._navigate(this._scoped(q));
+    }
+
+    /**
+     * Search where you are. On a folder list (Inbox, Sent, Drafts, Trash, Spam,
+     * Archive, Snoozed, and the Messages lists) the query gets that folder's
+     * `in:` operator put in front of it, so the results stay in the folder.
+     * The operator is visible in the box on the results page, and deleting it
+     * widens the search to everything. A query that already says `in:` is left
+     * alone, and so are lists that are not one folder (All Mail, Unread,
+     * Starred, a label, an account's overview).
+     */
+    _scoped(q) {
+        if (/(^|\s)in:/i.test(q)) {
+            return q;
+        }
+
+        const scope = (document.getElementById("inbox-list-frame")?.dataset.syncScope ?? "").trim();
+        const roles = ["inbox", "sent", "drafts", "trash", "spam", "archive", "snoozed"];
+        let role = roles.includes(scope) ? scope : null;
+
+        if ("messages" === scope) {
+            role = window.location.pathname.endsWith("/messages/sent") ? "sent" : "inbox";
+        }
+
+        return null === role ? q : `in:${role} ${q}`;
     }
 
     _navigate(q) {
