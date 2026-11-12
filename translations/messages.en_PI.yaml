@@ -2770,6 +2770,11 @@ message:
             body: "This bottle was fished from the bilge. Its links and pictures be treacherous — treat aught it asks of ye as a stranger's demand."
             title: This bottle sits in the bilge
 
+messages:
+    empty: 'No letters yet.'
+    heading: 'Letters'
+    hint: 'Every letter that has come aboard, one line each, newest first. No parleys.'
+
 mercure:
     status:
         connected: "Live signals flyin'"
@@ -4629,6 +4634,7 @@ sidebar:
         calendar: Almanac
         drafts: Scrolls in the works
         inbox: Bottles washed ashore
+        messages: 'Letters'
         more: More
         sent: Cast off
         snoozed: Kept below deck

@@ -1,0 +1,26 @@
+{% extends '_layout/_mailbox.html.twig' %}
+
+{# One row per email, not per conversation. See MailController::messages(). #}
+
+{% block list_scope %}messages{% endblock %}
+
+{% block title %}{{ 'messages.heading'|trans }} — {{ 'app.name'|trans }}{% endblock %}
+
+{% block inbox_tabs %}
+    <div class="px-4 py-2.5 border-b border-line">
+        <h2 class="text-sm font-semibold text-ink-soft">{{ 'messages.heading'|trans }}</h2>
+        <p class="text-[11px] text-ink-faint mt-0.5">{{ 'messages.hint'|trans }}</p>
+    </div>
+{% endblock %}
+
+{% block message_list %}
+    {% if messages is empty %}
+        <li class="px-4 py-8 text-center text-sm text-ink-faint">
+            {{ 'messages.empty'|trans }}
+        </li>
+    {% else %}
+        {% for message in messages %}
+            {% include '_partials/_thread_row.html.twig' with { message: message } %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}

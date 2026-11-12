@@ -447,6 +447,60 @@ class MessageRepository extends ServiceEntityRepository
     }
 
     /**
+     * Mail that has arrived in a person's inboxes, one row per message,
+     * newest first. The flat list: no conversations, so a reply and the mail
+     * it answers are two rows, in the order they came in.
+     *
+     * Received mail only (a sent message or a draft has no receivedAt), in an
+     * active account, with an Inbox label and not in the bin. The Inbox test is
+     * a subquery, not a join, so a message wearing two labels is not listed
+     * twice.
+     *
+     * @return list<Message>
+     */
+    public function findReceivedForUser(User $user, int $page, int $perPage, bool $unreadOnly = false): array
+    {
+        return $this->receivedQuery($user, $unreadOnly)
+            ->select('m')
+            ->orderBy('m.receivedAt', 'DESC')
+            ->addOrderBy('m.id', 'DESC')
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** The same list's length, for the pager. */
+    public function countReceivedForUser(User $user, bool $unreadOnly = false): int
+    {
+        return (int) $this->receivedQuery($user, $unreadOnly)
+            ->select('COUNT(m.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    private function receivedQuery(User $user, bool $unreadOnly): \Doctrine\ORM\QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->join('m.account', 'a')
+            ->leftJoin('m.thread', 't')
+            ->where('a.usr = :user')
+            ->andWhere('a.isActive = true')
+            ->andWhere('m.receivedAt IS NOT NULL')
+            ->andWhere('(t.id IS NULL OR t.binned = false)')
+            ->andWhere('m.id IN (SELECT inboxed.id FROM ' . Message::class
+                . ' inboxed JOIN inboxed.labels inboxLabel WHERE inboxLabel.role = :inbox)')
+            ->setParameter('user', $user)
+            ->setParameter('inbox', LabelRole::Inbox);
+
+        if (true === $unreadOnly) {
+            $qb->andWhere('m.seenAt IS NULL');
+        }
+
+        return $qb;
+    }
+
+    /**
      * How many of a user's drafts carry a failed-send warning — the sidebar's
      * mark on Drafts. Drafts only, by label as the Drafts list selects them, so
      * a marked draft that was thrown away stops counting with it.

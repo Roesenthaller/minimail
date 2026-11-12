@@ -2892,6 +2892,11 @@ message:
             body: "Diese Nachricht wurde als Spam eingestuft. Ihre Links und Bilder sind riskant — behandle jede Aufforderung darin wie die eines Fremden."
             title: Diese Nachricht ist im Spam
 
+messages:
+    empty: 'Noch keine Nachrichten.'
+    heading: 'Nachrichten'
+    hint: 'Jede eingegangene E-Mail als eigene Zeile, neueste zuerst. Keine Unterhaltungen.'
+
 mercure:
     status:
         connected: Live-Aktualisierung aktiv
@@ -4857,6 +4862,7 @@ sidebar:
         calendar: Kalender
         drafts: Entwürfe
         inbox: Posteingang
+        messages: 'Nachrichten'
         more: Mehr
         sent: Gesendet
         snoozed: Zurückgestellt

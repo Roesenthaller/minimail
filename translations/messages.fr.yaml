@@ -2923,6 +2923,11 @@ message:
             body: "Ce message a été classé comme spam. Ses liens et images sont risqués — traitez tout ce qu’il vous demande comme la requête d’un inconnu."
             title: Ce message est dans Spam
 
+messages:
+    empty: 'Aucun message pour l’instant.'
+    heading: 'Messages'
+    hint: 'Chaque e-mail reçu sur sa propre ligne, le plus récent en premier. Sans conversations.'
+
 mercure:
     status:
         connected: Mises à jour en direct actives
@@ -4864,6 +4869,7 @@ sidebar:
         calendar: Agenda
         drafts: Brouillons
         inbox: Boîte de réception
+        messages: 'Messages'
         more: Plus
         sent: Envoyés
         snoozed: En attente

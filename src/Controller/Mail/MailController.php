@@ -628,6 +628,38 @@ final class MailController extends AbstractController
         ]);
     }
 
+    /**
+     * Every email that has arrived, one row each, newest first: no
+     * conversations. For anyone who finds a conversation that forks when
+     * somebody is added impossible to follow. A row opens that one message.
+     *
+     * Received mail in the Inbox only for now. It has no sort menu, tabs or
+     * badges yet; see MessageRepository::findReceivedForUser().
+     */
+    #[Route('/messages', name: 'messages')]
+    public function messages(Request $request): Response
+    {
+        /** @var User $user */
+        $user       = $this->getUser();
+        $unreadOnly = $this->unreadOnly($request);
+        $total      = $this->messageRepository->countReceivedForUser($user, $unreadOnly);
+        $page       = $this->pageOrRedirect($request, $total);
+
+        if ($page instanceof RedirectResponse) {
+            return $page;
+        }
+
+        $messages = $this->messageRepository->findReceivedForUser($user, $page, self::PER_PAGE, $unreadOnly);
+
+        return $this->render('mail/messages.html.twig', [
+            'messages'    => $messages,
+            'page'        => $page,
+            'total'       => $total,
+            'per_page'    => self::PER_PAGE,
+            'unread_only' => $unreadOnly,
+        ]);
+    }
+
     #[Route('/starred', name: 'starred')]
     public function starred(Request $request): Response
     {

@@ -2906,6 +2906,11 @@ message:
             body: "This message was filed as spam. Its links and images are risky — treat anything it asks of you as a stranger's request."
             title: This message is in Spam
 
+messages:
+    empty: 'No messages yet.'
+    heading: 'Messages'
+    hint: 'Every email that has arrived, one row each, newest first. No conversations.'
+
 mercure:
     status:
         connected: Live updates active
@@ -4828,6 +4833,7 @@ sidebar:
         calendar: Calendar
         drafts: Drafts
         inbox: Inbox
+        messages: 'Messages'
         more: More
         sent: Sent
         snoozed: Snoozed
