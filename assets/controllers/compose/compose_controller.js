@@ -115,6 +115,17 @@ export default class extends Controller {
     #frameId = null
 
     connect() {
+        // Files dropped anywhere on the compose window are attached. Images
+        // dropped on the body are handled there first (inline pictures) and
+        // those never reach this.
+        this._boundWindowDragOver  = this._windowDragOver.bind(this);
+        this._boundWindowDragLeave = this._windowDragLeave.bind(this);
+        this._boundWindowDrop      = this._windowDrop.bind(this);
+        this._dragDepth            = 0;
+        this.element.addEventListener('dragenter', this._boundWindowDragOver);
+        this.element.addEventListener('dragover',  this._boundWindowDragOver);
+        this.element.addEventListener('dragleave', this._boundWindowDragLeave);
+        this.element.addEventListener('drop',      this._boundWindowDrop);
         const input = this.element.querySelector('.compose-to[data-prototype]');
         this._ensureEntry(input);
         this.#frameId = this.element.closest('turbo-frame')?.id ?? null;
@@ -629,6 +640,10 @@ export default class extends Controller {
     }
 
     disconnect() {
+        this.element.removeEventListener('dragenter', this._boundWindowDragOver);
+        this.element.removeEventListener('dragover',  this._boundWindowDragOver);
+        this.element.removeEventListener('dragleave', this._boundWindowDragLeave);
+        this.element.removeEventListener('drop',      this._boundWindowDrop);
         clearTimeout(this.#autosaveTimer);
         clearInterval(this._sendingTicker);
         clearTimeout(this._sendHoldTimer);
@@ -3636,6 +3651,14 @@ export default class extends Controller {
         // again after a removal.
         input.value = '';
 
+        await this._attachFiles(files);
+    }
+
+    /**
+     * Attach files as real attachments: the paperclip's files, and the ones
+     * dropped anywhere on the compose window.
+     */
+    async _attachFiles(files) {
         const tooBig = files.find((file) => file.size > this.maxAttachmentBytesValue);
 
         if (undefined !== tooBig) {
@@ -3860,6 +3883,65 @@ export default class extends Controller {
         this._toolbar()?._saveRange();
 
         this._placeImages(files);
+
+        // Anything else in the same drop is an attachment.
+        const others = Array.from(event.dataTransfer?.files ?? [])
+            .filter((file) => false === file.type.startsWith('image/'));
+
+        if (others.length > 0) {
+            this._attachFiles(others);
+        }
+    }
+
+    _hasFiles(event) {
+        return Array.from(event.dataTransfer?.types ?? []).includes('Files');
+    }
+
+    /** Say a drop is welcome, and outline the window while files are over it. */
+    _windowDragOver(event) {
+        if (false === this._hasFiles(event)) {
+            return;
+        }
+
+        event.preventDefault();
+
+        if ('dragenter' === event.type) {
+            this._dragDepth += 1;
+        }
+
+        this.element.classList.add('ring-2', 'ring-accent', 'ring-inset');
+    }
+
+    _windowDragLeave(event) {
+        if (false === this._hasFiles(event)) {
+            return;
+        }
+
+        this._dragDepth = Math.max(0, this._dragDepth - 1);
+
+        if (0 === this._dragDepth) {
+            this.element.classList.remove('ring-2', 'ring-accent', 'ring-inset');
+        }
+    }
+
+    /** Attach what was dropped, unless the body already took it as a picture. */
+    _windowDrop(event) {
+        this._dragDepth = 0;
+        this.element.classList.remove('ring-2', 'ring-accent', 'ring-inset');
+
+        if (false === this._hasFiles(event) || true === event.defaultPrevented) {
+            return;
+        }
+
+        const files = Array.from(event.dataTransfer?.files ?? []);
+
+        if (0 === files.length) {
+            return;
+        }
+
+        // preventDefault so the browser does not open the file in this tab.
+        event.preventDefault();
+        this._attachFiles(files);
     }
 
     /** Dropping onto a contenteditable is refused unless dragover says yes. */
