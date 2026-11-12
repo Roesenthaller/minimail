@@ -194,8 +194,9 @@ provenance link carries it too.
                 </h3>
                 {# whitespace-pre-line: a description arrives with real newlines
                    and HTML collapses them. Escaped, never raw — this text came
-                   off somebody's mail. #}
-                <p class="mt-2 whitespace-pre-line break-words text-sm text-ink-soft">{{ description }}</p>
+                   off somebody's mail. |linkify escapes it all and only turns
+                   http and https addresses into links. #}
+                <p class="mt-2 whitespace-pre-line break-words text-sm text-ink-soft">{{ description|linkify }}</p>
             </div>
         {% endif %}
 
