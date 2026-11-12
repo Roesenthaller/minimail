@@ -6106,3 +6106,77 @@ html.dark[data-avatar-scheme="soft"] [data-row-avatar-face] {
     background-color: hsl(var(--av-h) 45% 24%);
     color: hsl(var(--av-h) 80% 85%);
 }
+
+/*
+   "By letter": one colour for each first letter, A to Z, so every Adam, Anna
+   and Amy is the same colour and a list can be scanned for a letter. The hue
+   steps around the wheel in alphabetical order; alternate letters are a shade
+   lighter so neighbours (B, C) do not blur together. Digits and anything else
+   (data-letter 26) are grey. Unlayered, so it wins over the tone classes.
+*/
+html[data-avatar-scheme="letter"] [data-row-avatar-face] {
+    --lt-h: calc(var(--lt-i, 0) * 13.85);
+    --lt-l: 36%;
+    background-color: hsl(var(--lt-h) 58% var(--lt-l));
+    color: #fff;
+}
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="1"],
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="3"],
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="5"],
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="7"],
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="9"],
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="11"],
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="13"],
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="15"],
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="17"],
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="19"],
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="21"],
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="23"],
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="25"] { --lt-l: 46%; }
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face] {
+    --lt-l: 68%;
+    color: #111;
+}
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="1"],
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="3"],
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="5"],
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="7"],
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="9"],
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="11"],
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="13"],
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="15"],
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="17"],
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="19"],
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="21"],
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="23"],
+html.dark[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="25"] { --lt-l: 58%; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="26"] {
+    background-color: rgb(var(--rgb-sunken));
+    color: rgb(var(--rgb-ink-muted));
+}
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="0"] { --lt-i: 0; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="1"] { --lt-i: 1; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="2"] { --lt-i: 2; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="3"] { --lt-i: 3; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="4"] { --lt-i: 4; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="5"] { --lt-i: 5; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="6"] { --lt-i: 6; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="7"] { --lt-i: 7; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="8"] { --lt-i: 8; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="9"] { --lt-i: 9; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="10"] { --lt-i: 10; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="11"] { --lt-i: 11; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="12"] { --lt-i: 12; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="13"] { --lt-i: 13; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="14"] { --lt-i: 14; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="15"] { --lt-i: 15; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="16"] { --lt-i: 16; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="17"] { --lt-i: 17; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="18"] { --lt-i: 18; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="19"] { --lt-i: 19; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="20"] { --lt-i: 20; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="21"] { --lt-i: 21; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="22"] { --lt-i: 22; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="23"] { --lt-i: 23; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="24"] { --lt-i: 24; }
+html[data-avatar-scheme="letter"] [data-row-avatar-face][data-letter="25"] { --lt-i: 25; }

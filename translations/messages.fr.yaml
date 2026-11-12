@@ -4558,8 +4558,9 @@ settings:
         submitting: Enregistrement…
     list_display:
         avatar_scheme:
-            hint: 'Sourdes : les couleurs sombres. Douces : des teintes claires. Neutres : un seul gris discret pour tous.'
+            hint: 'Par lettre donne à chaque initiale sa couleur, de A à Z. Sourdes : les couleurs sombres choisies selon l''adresse. Douces : des teintes claires. Neutres : un seul gris discret pour tous.'
             label: 'Couleurs des pastilles'
+            letter: 'Par lettre'
             muted: 'Sourdes'
             soft: 'Douces'
             neutral: 'Neutres'

@@ -74,6 +74,7 @@ final class SenderAvatarExtension extends AbstractExtension
         return [
             new TwigFilter('avatar_tone', $this->tone(...)),
             new TwigFilter('avatar_tone_index', $this->toneIndex(...)),
+            new TwigFilter('avatar_letter_index', $this->letterIndex(...)),
             new TwigFilter('avatar_initial', $this->initial(...)),
             new TwigFilter('account_tone', $this->accountTone(...)),
             new TwigFilter('account_color', $this->accountColor(...)),
@@ -133,6 +134,21 @@ final class SenderAvatarExtension extends AbstractExtension
         $normalised = mb_strtolower(trim((string) $seed));
 
         return '' === $normalised ? 0 : crc32($normalised) % count(self::TONES);
+    }
+
+    /**
+     * 0 for A to 25 for Z, from the same letter initial() draws, with accents
+     * folded (Élodie is E). 26 for a digit or anything else, which has its own
+     * grey. The "By letter" colour scheme paints from this, so every sender
+     * whose initial is the same letter gets the same colour.
+     */
+    public function letterIndex(?string $name, ?string $fallback = null): int
+    {
+        $initial = $this->initial($name, $fallback);
+        $folded  = \transliterator_transliterate('Any-Latin; Latin-ASCII; Upper()', $initial);
+        $letter  = \is_string($folded) ? $folded : $initial;
+
+        return 1 === \preg_match('/^[A-Z]/', $letter) ? \ord($letter[0]) - 65 : 26;
     }
 
     /**

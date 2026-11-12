@@ -25,6 +25,18 @@
    the second one is an arrival, and only the second one is told so. #}
 {% import '_partials/_sidebar.html.twig' as sidebarMacros %}
 <nav class="nav-rows"{% if entering|default(false) %} data-enter="fade"{% endif %}>
+    {# This account's mail one message per row, no conversations: the flat
+       list for anyone who cannot follow a thread that forks. Per account,
+       because two mailboxes in one list is not a list anybody can read. #}
+    {% set messagesHref = path('app_mail_account_messages', { account: account.id }) %}
+    <div class="nav-item flex items-center text-xs {{ sidebar_row_state(messagesHref) }}" data-nav-tier="tree" style="--label-depth: 12px">
+        <a href="{{ messagesHref }}"
+           data-ui--sidebar-target="link"
+           data-turbo-frame="_top"
+           {{ sidebarMacros.list_frame() }}
+           data-turbo-prefetch="false"
+           class="flex-1 min-w-0 truncate">{{ 'sidebar.nav.messages'|trans }}</a>
+    </div>
     {# This account's All Mail, first among its folders: everything of this
        account's outside Spam and the bin. Shown while the All Mail label is —
        one switch for this row and the one across every account, so turning

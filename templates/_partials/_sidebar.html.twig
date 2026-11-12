@@ -565,23 +565,6 @@ controller instead — the scroll position and which trees are open.
             {{ macros.system_row(_row, false, _drawerClose) }}
         {% endfor %}
 
-        {# Every email that has arrived, one row each and no conversations. A
-           plain link: it takes no drops and has no badge yet. #}
-        {% set _href = path('app_mail_messages') %}
-        <a href="{{ _href }}"
-           {{ macros.list_frame() }}
-           class="nav-item flex items-center justify-between gap-2 px-3 rounded-lg transition-colors {{ sidebar_row_state(_href) }}"
-           data-nav-tier="row"
-           data-ui--sidebar-target="link"
-           data-action="{{ _drawerClose }}"
-           title="{{ 'sidebar.nav.messages'|trans }}"
-        >
-            <span class="flex items-center gap-2">
-                <i class="fa-solid fa-list w-4" aria-hidden="true"></i>
-                <span class="rail-hide">{{ 'sidebar.nav.messages'|trans }}</span>
-            </span>
-        </a>
-
         {# Every conversation outside Spam and the bin, in one list. Opt-in like
            Unread: its label is created hidden and switched on in label
            settings (LabelRole::AllMail), and the rows under each account follow

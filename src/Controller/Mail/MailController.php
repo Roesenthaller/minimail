@@ -639,19 +639,37 @@ final class MailController extends AbstractController
     #[Route('/messages', name: 'messages')]
     public function messages(Request $request): Response
     {
+        return $this->messagesList($request, null);
+    }
+
+    /**
+     * The same flat list for one account, which is how it is reached from the
+     * sidebar: two mailboxes mixed into one list are hard to tell apart.
+     */
+    #[Route('/account/{account}/messages', name: 'account_messages', requirements: ['account' => '\d+'])]
+    public function accountMessages(Account $account, Request $request): Response
+    {
+        $this->denyAccessUnlessGranted(OwnershipVoter::OWN, $account);
+
+        return $this->messagesList($request, $account);
+    }
+
+    private function messagesList(Request $request, ?Account $account): Response
+    {
         /** @var User $user */
         $user       = $this->getUser();
         $unreadOnly = $this->unreadOnly($request);
-        $total      = $this->messageRepository->countReceivedForUser($user, $unreadOnly);
+        $total      = $this->messageRepository->countReceivedForUser($user, $unreadOnly, $account);
         $page       = $this->pageOrRedirect($request, $total);
 
         if ($page instanceof RedirectResponse) {
             return $page;
         }
 
-        $messages = $this->messageRepository->findReceivedForUser($user, $page, self::PER_PAGE, $unreadOnly);
+        $messages = $this->messageRepository->findReceivedForUser($user, $page, self::PER_PAGE, $unreadOnly, $account);
 
         return $this->render('mail/messages.html.twig', [
+            'account'     => $account,
             'messages'    => $messages,
             'page'        => $page,
             'total'       => $total,

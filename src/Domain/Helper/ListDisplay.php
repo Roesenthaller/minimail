@@ -15,8 +15,8 @@ final class ListDisplay
     /** @var list<string> small, the size it has been since the rows were tightened, and the original */
     public const array AVATAR_SIZES = ['medium', 'small', 'large'];
 
-    /** @var list<string> the dark muted tones, the same hues lightly tinted, one quiet grey */
-    public const array AVATAR_SCHEMES = ['muted', 'soft', 'neutral'];
+    /** @var list<string> one colour per first letter, the dark muted tones picked by address, those hues lightly tinted, one quiet grey */
+    public const array AVATAR_SCHEMES = ['letter', 'muted', 'soft', 'neutral'];
 
     /** @var list<string> 10rem, 14rem, 18rem */
     public const array SENDER_WIDTHS = ['normal', 'wide', 'wider'];

@@ -18,7 +18,7 @@ Accepts:
                   transition-colors cursor-pointer' %}
 {% set groups = [
     { field: 'avatar_size',   attribute: 'data-avatar-size',   current: avatar_size,   values: ['small', 'medium', 'large'] },
-    { field: 'avatar_scheme', attribute: 'data-avatar-scheme', current: avatar_scheme, values: ['muted', 'soft', 'neutral'] },
+    { field: 'avatar_scheme', attribute: 'data-avatar-scheme', current: avatar_scheme, values: ['letter', 'muted', 'soft', 'neutral'] },
     { field: 'sender_width',  attribute: 'data-sender-width',  current: sender_width,  values: ['normal', 'wide', 'wider'] },
 ] %}
 
@@ -55,8 +55,8 @@ Accepts:
     <div class="px-4 py-3">
         <span class="block text-[11px] text-ink-faint mb-2">{{ 'settings.list_display.preview'|trans }}</span>
         <div class="flex items-center gap-3">
-            {% for name in ['Ada Lovelace', 'Ben Carter', 'Chloe Diaz', 'Dev Patel', 'Eva Novak', 'Finn Olsen', 'Grace Kim', 'Hugo Weiss'] %}
-                <span data-row-avatar-face data-tone="{{ name|avatar_tone_index }}"
+            {% for name in ['Ada Lovelace', 'Ben Carter', 'Chloe Diaz', 'Dev Patel', 'Eva Novak', 'Finn Olsen', 'Grace Kim', 'Hugo Weiss', 'Ivy Chen', 'Jon Reid', 'Kai Ortiz', 'Lena Roth'] %}
+                <span data-row-avatar-face data-tone="{{ name|avatar_tone_index }}" data-letter="{{ name|avatar_letter_index }}"
                       class="relative flex items-center justify-center rounded-full w-[var(--avatar-size,1.75rem)] h-[var(--avatar-size,1.75rem)] text-xs font-semibold select-none {{ name|avatar_tone }}"
                       aria-hidden="true">{{ name|avatar_initial(name) }}</span>
             {% endfor %}

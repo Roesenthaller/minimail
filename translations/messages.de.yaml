@@ -4523,8 +4523,9 @@ settings:
         submitting: Wird gespeichert…
     list_display:
         avatar_scheme:
-            hint: 'Gedeckt sind die dunkleren Farben. Hell sind helle Töne. Neutral ist ein ruhiges Grau für alle.'
+            hint: 'Nach Buchstabe gibt jedem Anfangsbuchstaben eine eigene Farbe, A bis Z. Gedeckt sind die dunkleren Farben nach Adresse. Hell sind helle Töne. Neutral ist ein ruhiges Grau für alle.'
             label: 'Farben der Absenderkreise'
+            letter: 'Nach Buchstabe'
             muted: 'Gedeckt'
             soft: 'Hell'
             neutral: 'Neutral'

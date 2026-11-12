@@ -4301,8 +4301,9 @@ settings:
         submitting: Stowin'…
     list_display:
         avatar_scheme:
-            hint: 'Muted be the darker colours. Soft be light tints. Neutral be one quiet grey for all hands.'
+            hint: 'By letter gives every first letter its own colour, A to Z. Muted be the darker colours picked by address. Soft be light tints. Neutral be one quiet grey for all hands.'
             label: 'Sender disc colours'
+            letter: 'By letter'
             muted: 'Muted'
             soft: 'Soft'
             neutral: 'Neutral'

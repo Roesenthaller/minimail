@@ -8,7 +8,7 @@
 
 {% block inbox_tabs %}
     <div class="px-4 py-2.5 border-b border-line">
-        <h2 class="text-sm font-semibold text-ink-soft">{{ 'messages.heading'|trans }}</h2>
+        <h2 class="text-sm font-semibold text-ink-soft">{{ 'messages.heading'|trans }}{% if account is not null %} <span class="font-normal text-ink-faint">{{ account.email|default(account.name|default('')) }}</span>{% endif %}</h2>
         <p class="text-[11px] text-ink-faint mt-0.5">{{ 'messages.hint'|trans }}</p>
     </div>
 {% endblock %}

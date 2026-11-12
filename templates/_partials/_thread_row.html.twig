@@ -429,7 +429,7 @@ be a worse regression than the one this feature fixes.
                does from the initial. See mail--sender-logo and
                SenderLogoController. #}
             {% set logoUrl = sender_logo_url(senderSeed) %}
-            <span data-row-avatar-face data-tone="{{ senderSeed|avatar_tone_index }}"
+            <span data-row-avatar-face data-tone="{{ senderSeed|avatar_tone_index }}" data-letter="{{ sender|avatar_letter_index(senderSeed) }}"
                   class="relative flex items-center justify-center rounded-full
                          w-[var(--avatar-size,1.75rem)] h-[var(--avatar-size,1.75rem)] text-xs font-semibold select-none
                          transition-opacity

@@ -4496,8 +4496,9 @@ settings:
         submitting: Saving…
     list_display:
         avatar_scheme:
-            hint: 'Muted is the darker colours. Soft is light tints. Neutral is one quiet grey for everyone.'
+            hint: 'By letter gives every first letter its own colour, A to Z. Muted is the darker colours picked by address. Soft is light tints. Neutral is one quiet grey for everyone.'
             label: 'Sender disc colours'
+            letter: 'By letter'
             muted: 'Muted'
             soft: 'Soft'
             neutral: 'Neutral'

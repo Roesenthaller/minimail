@@ -3827,8 +3827,9 @@ settings:
         submitting: "正在保存…"
     list_display:
         avatar_scheme:
-            hint: '深沉为较深的颜色，浅色为淡色调，中性为统一的淡灰色。'
+            hint: '按字母让每个首字母有自己的颜色（A 到 Z）。深沉为按地址选择的较深颜色，浅色为淡色调，中性为统一的淡灰色。'
             label: '发件人圆圈颜色'
+            letter: '按字母'
             muted: '深沉'
             soft: '浅色'
             neutral: '中性'

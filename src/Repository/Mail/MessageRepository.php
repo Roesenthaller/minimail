@@ -458,9 +458,9 @@ class MessageRepository extends ServiceEntityRepository
      *
      * @return list<Message>
      */
-    public function findReceivedForUser(User $user, int $page, int $perPage, bool $unreadOnly = false): array
+    public function findReceivedForUser(User $user, int $page, int $perPage, bool $unreadOnly = false, ?Account $account = null): array
     {
-        return $this->receivedQuery($user, $unreadOnly)
+        return $this->receivedQuery($user, $unreadOnly, $account)
             ->select('m')
             ->orderBy('m.receivedAt', 'DESC')
             ->addOrderBy('m.id', 'DESC')
@@ -471,15 +471,15 @@ class MessageRepository extends ServiceEntityRepository
     }
 
     /** The same list's length, for the pager. */
-    public function countReceivedForUser(User $user, bool $unreadOnly = false): int
+    public function countReceivedForUser(User $user, bool $unreadOnly = false, ?Account $account = null): int
     {
-        return (int) $this->receivedQuery($user, $unreadOnly)
+        return (int) $this->receivedQuery($user, $unreadOnly, $account)
             ->select('COUNT(m.id)')
             ->getQuery()
             ->getSingleScalarResult();
     }
 
-    private function receivedQuery(User $user, bool $unreadOnly): \Doctrine\ORM\QueryBuilder
+    private function receivedQuery(User $user, bool $unreadOnly, ?Account $account = null): \Doctrine\ORM\QueryBuilder
     {
         $qb = $this->createQueryBuilder('m')
             ->join('m.account', 'a')
@@ -492,6 +492,10 @@ class MessageRepository extends ServiceEntityRepository
                 . ' inboxed JOIN inboxed.labels inboxLabel WHERE inboxLabel.role = :inbox)')
             ->setParameter('user', $user)
             ->setParameter('inbox', LabelRole::Inbox);
+
+        if (null !== $account) {
+            $qb->andWhere('a = :account')->setParameter('account', $account);
+        }
 
         if (true === $unreadOnly) {
             $qb->andWhere('m.seenAt IS NULL');
