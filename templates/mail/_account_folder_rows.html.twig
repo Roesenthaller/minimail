@@ -36,6 +36,13 @@
            {{ sidebarMacros.list_frame() }}
            data-turbo-prefetch="false"
            class="flex-1 min-w-0 truncate">{{ 'sidebar.nav.messages'|trans }}</a>
+        {% set unreadMessages = unread_messages(account) %}
+        {% if unreadMessages > 0 %}
+            <a href="{{ path('app_mail_account_messages', { account: account.id, unread: 1 }) }}"
+               data-turbo-frame="_top"
+               class="ml-2 shrink-0 rounded-full bg-accent/15 px-1.5 text-[10px] font-semibold tabular-nums text-accent"
+               title="{{ 'toolbar.filter.unread_only'|trans }}">{{ unreadMessages > 999 ? '999+' : unreadMessages }}</a>
+        {% endif %}
     </div>
     {% set sentMessagesHref = path('app_mail_account_messages_sent', { account: account.id }) %}
     <div class="nav-item flex items-center text-xs {{ sidebar_row_state(sentMessagesHref) }}" data-nav-tier="tree" style="--label-depth: 12px">

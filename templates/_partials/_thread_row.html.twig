@@ -213,7 +213,7 @@ Threads only. A bare Message row is a message, and only a conversation arrives.
     {% set snippet = mail_snippet(item)|slice(0, 100) %}
     {% set encrypted = item.crypto is not null and item.crypto.encrypted %}
 
-    {% set hasAttachment = item.hasAttachments %}
+    {% set hasAttachment = item.hasAttachments or message_files(item) is not empty %}
 
     {% set draft = item.isDraft %}
     {% set draftId = item.id %}

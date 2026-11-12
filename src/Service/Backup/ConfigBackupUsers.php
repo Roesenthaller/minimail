@@ -201,6 +201,7 @@ final readonly class ConfigBackupUsers
         User::SETTING_LIST_AVATAR_SIZE,
         User::SETTING_LIST_AVATAR_SCHEME,
         User::SETTING_LIST_SENDER_WIDTH,
+        User::SETTING_INBOX_AS_MESSAGES,
         // What a dragged row does, one key per direction. In the backup for the
         // reason the reading pane's keys are: a choice about one's own screen,
         // a short string with no id, and the same meaning on any install. A

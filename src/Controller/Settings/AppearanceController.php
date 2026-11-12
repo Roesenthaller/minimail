@@ -182,9 +182,14 @@ final class AppearanceController extends AbstractController
             $user->listSenderWidth = $request->request->getString('sender_width');
         }
 
+        if (true === $request->request->has('inbox_as_messages')) {
+            $user->inboxAsMessages = $request->request->getBoolean('inbox_as_messages');
+        }
+
         $this->entityManager->flush();
 
         return $this->json([
+            'inbox_as_messages' => $user->inboxAsMessages,
             'avatar_size'   => $user->listAvatarSize,
             'avatar_scheme' => $user->listAvatarScheme,
             'sender_width'  => $user->listSenderWidth,

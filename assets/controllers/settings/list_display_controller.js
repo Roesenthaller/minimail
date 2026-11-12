@@ -58,6 +58,29 @@ export default class extends Controller {
         document.documentElement.setAttribute(input.dataset.attribute, input.value);
     }
 
+    /** The Inbox-as-messages checkbox: a yes or no, posted like the radios. */
+    async toggle(event) {
+        const box = event.target;
+        const body = new FormData();
+        body.append("_token", this.tokenValue);
+        body.append(box.name, box.checked ? "1" : "0");
+
+        try {
+            const response = await fetch(this.urlValue, {
+                method: "POST",
+                body,
+                headers: { "X-Requested-With": "fetch" },
+            });
+
+            if (requestFailed(response)) {
+                box.checked = !box.checked;
+            }
+        } catch {
+            box.checked = !box.checked;
+            requestFailed(null);
+        }
+    }
+
     _revert(group, previous) {
         const back = group.querySelector(`input[value="${previous}"]`);
 

@@ -4302,6 +4302,9 @@ settings:
         submit: Change th' secret word
         submitting: Stowin'…
     list_display:
+        inbox_as_messages:
+            hint: 'Show the Inbox as one row per letter instead of conversations. The Inbox rows in the sidebar then open the Messages list.'
+            label: 'Open the Inbox as messages'
         avatar_scheme:
             hint: 'By letter gives every first letter its own colour, A to Z. Muted be the darker colours picked by address. Soft be light tints. Neutral be one quiet grey for all hands.'
             label: 'Sender disc colours'

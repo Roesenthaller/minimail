@@ -242,11 +242,28 @@ final class MailController extends AbstractController
         return new JsonResponse(['marked' => $marked]);
     }
 
+    /**
+     * The parts of the address that mean the same on the flat list: which page,
+     * unread only, and the sort. A category tab has no meaning there.
+     *
+     * @return array<string, mixed>
+     */
+    private function listQuery(Request $request): array
+    {
+        return array_intersect_key($request->query->all(), array_flip(['unread', 'page', 'sort']));
+    }
+
     #[Route('/inbox', name: 'inbox')]
     public function inbox(
         Request $request,
     ): Response {
         $user = $this->getUser();
+
+        // For anyone who has asked for the Inbox as one row per email: Settings,
+        // List display. The query (unread, page, sort) travels with them.
+        if ($user instanceof User && true === $user->inboxAsMessages) {
+            return $this->redirectToRoute('app_mail_messages', $this->listQuery($request));
+        }
 
         // What `?tab=` may hold, what a key that is not a tab opens, and the
         // one list somebody with the tabs switched off gets: requestedTab().
@@ -508,6 +525,10 @@ final class MailController extends AbstractController
     public function accountView(Account $account, Request $request): Response
     {
         $this->denyAccessUnlessGranted(OwnershipVoter::OWN, $account);
+
+        if ($this->getUser() instanceof User && true === $this->getUser()->inboxAsMessages) {
+            return $this->redirectToRoute('app_mail_account_messages', ['account' => $account->id] + $this->listQuery($request));
+        }
 
         // The same tabs as the unified inbox, and read the same way — the
         // reader's own included: see requestedTab(). A key for a category that

@@ -759,6 +759,9 @@ class User extends UserEntityModel implements UserInterface, PasswordAuthenticat
     public const string SETTING_LIST_AVATAR_SCHEME = 'list.avatar_scheme';
     public const string SETTING_LIST_SENDER_WIDTH  = 'list.sender_width';
 
+    /** Open the Inbox as one row per email (Messages) rather than as conversations. */
+    public const string SETTING_INBOX_AS_MESSAGES = 'list.inbox_as_messages';
+
     /**
      * The accounts whose folder lists are expanded in the sidebar, as a list of
      * account ids. Replaces SETTING_SIDEBAR_ACCOUNT, which could hold only one
@@ -1184,6 +1187,14 @@ class User extends UserEntityModel implements UserInterface, PasswordAuthenticat
         get => ReadingPaneMode::fromSetting($this->getSetting(self::SETTING_READING_PANE_MODE));
         set (ReadingPaneMode $mode) {
             $this->setSetting(self::SETTING_READING_PANE_MODE, $mode->value);
+        }
+    }
+
+    /** Virtual, out of the settings bag — see SETTING_INBOX_AS_MESSAGES. */
+    public bool $inboxAsMessages {
+        get => true === $this->getSetting(self::SETTING_INBOX_AS_MESSAGES);
+        set (bool $on) {
+            $this->setSetting(self::SETTING_INBOX_AS_MESSAGES, $on);
         }
     }
 

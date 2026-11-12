@@ -4524,6 +4524,9 @@ settings:
         submit: Passwort ändern
         submitting: Wird gespeichert…
     list_display:
+        inbox_as_messages:
+            hint: 'Den Posteingang als eine Zeile pro E-Mail statt als Unterhaltungen zeigen. Die Posteingang-Zeilen in der Seitenleiste öffnen dann die Nachrichtenliste.'
+            label: 'Posteingang als Nachrichten öffnen'
         avatar_scheme:
             hint: 'Nach Buchstabe gibt jedem Anfangsbuchstaben eine eigene Farbe, A bis Z. Gedeckt sind die dunkleren Farben nach Adresse. Hell sind helle Töne. Neutral ist ein ruhiges Grau für alle.'
             label: 'Farben der Absenderkreise'

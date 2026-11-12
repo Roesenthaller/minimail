@@ -4497,6 +4497,9 @@ settings:
         submit: Change password
         submitting: Saving…
     list_display:
+        inbox_as_messages:
+            hint: 'Show the Inbox as one row per email instead of conversations. The Inbox rows in the sidebar then open the Messages list.'
+            label: 'Open the Inbox as messages'
         avatar_scheme:
             hint: 'By letter gives every first letter its own colour, A to Z. Muted is the darker colours picked by address. Soft is light tints. Neutral is one quiet grey for everyone.'
             label: 'Sender disc colours'

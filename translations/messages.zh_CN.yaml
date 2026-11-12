@@ -3828,6 +3828,9 @@ settings:
         submit: '更改密码'
         submitting: "正在保存…"
     list_display:
+        inbox_as_messages:
+            hint: '收件箱每封邮件显示一行，而不是按会话显示。侧边栏的收件箱将打开邮件列表。'
+            label: '以邮件形式打开收件箱'
         avatar_scheme:
             hint: '按字母让每个首字母有自己的颜色（A 到 Z）。深沉为按地址选择的较深颜色，浅色为淡色调，中性为统一的淡灰色。'
             label: '发件人圆圈颜色'
