@@ -36,7 +36,7 @@ Variables: form, message, ctx (an App\Domain\DTO\Mail\ComposeContext)
 {% set tb = "shrink-0 px-1.5 py-0.5 rounded text-sm transition-colors text-ink-muted hover:bg-hover" %}
 
 <turbo-frame id="{{ frame }}">
-    <div data-controller="compose--compose compose--compose-toolbar compose--encryption"
+    <div data-controller="compose--compose compose--compose-toolbar compose--encryption compose--mention"
          {# The server's statement that this render followed a save that was
             actually ACCEPTED. ComposeController::draft() has always passed
             `saved` and this template has never rendered it, which left the
