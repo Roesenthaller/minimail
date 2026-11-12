@@ -4,7 +4,7 @@
 {% set _idSuffix = _idSuffix is defined ? _idSuffix : '' %}
 
 {% for account in accounts %}
-    {% set expanded = app.user.expandedAccountId == account.id %}
+    {% set expanded = account.id in app.user.expandedAccountIds %}
     {% set frameId  = 'account-folders-' ~ account.id ~ _idSuffix %}
 
     {# The frame id travels with the request too. Turbo matches the response

@@ -837,16 +837,24 @@ final class MailController extends AbstractController
 
         /** @var User $user */
         $user      = $this->getUser();
-        $accountId = $request->toArray()['account'] ?? null;
+        $payload   = $request->toArray();
+        $accountId = $payload['account'] ?? null;
+        $expanded  = (bool) ($payload['expanded'] ?? false);
 
-        // Ownership is checked even though this is only a preference: the id
-        // comes back in the next render, where it decides whose folder list
-        // gets read.
+        // Ownership is checked even though this is only a preference: the ids
+        // come back in the next render, where they decide whose folder lists
+        // get read.
         $account = is_int($accountId) ? $this->accountRepository->find($accountId) : null;
 
-        $user->expandedAccountId = (null !== $account && $account->usr === $user)
-            ? (int) $account->id
-            : null;
+        if (null !== $account && $account->usr === $user) {
+            $open = array_values(array_diff($user->expandedAccountIds, [(int) $account->id]));
+
+            if ($expanded) {
+                $open[] = (int) $account->id;
+            }
+
+            $user->expandedAccountIds = $open;
+        }
 
         $em->flush();
 
@@ -998,14 +1006,17 @@ final class MailController extends AbstractController
         // The expanded account's folder rows count within that account and are
         // keyed accordingly, so they need their own entries — patched with the
         // user-wide number they would claim mail the list beside them does not
-        // show. Only the expanded account: it is the only one on screen.
+        // show. Only the expanded accounts: they are the only ones on screen.
         /** @var User $user */
-        $user    = $this->getUser();
-        $account = null === $user->expandedAccountId
-            ? null
-            : $this->accountRepository->find($user->expandedAccountId);
+        $user = $this->getUser();
 
-        if (null !== $account && $account->usr === $user) {
+        foreach ($user->expandedAccountIds as $expandedId) {
+            $account = $this->accountRepository->find($expandedId);
+
+            if (null === $account || $account->usr !== $user) {
+                continue;
+            }
+
             foreach ($labels as $label) {
                 $payload['label:' . $label->id . ':account:' . $account->id]
                     = $counts->forLabelInAccount($label, $account);

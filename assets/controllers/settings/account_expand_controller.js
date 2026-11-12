@@ -2,7 +2,8 @@ import { Controller } from "@hotwired/stimulus";
 import { jsonCsrfHeaders } from "../../csrf.js";
 
 /**
- * Expands an account's folder list in the sidebar.
+ * Expands an account's folder list in the sidebar. Accounts open and close
+ * independently, so several can be showing at once.
  *
  * Which row is highlighted is not decided here. It used to be, in a
  * highlightActive() that compared pathnames and ignored the `?account=` these
@@ -13,29 +14,16 @@ export default class extends Controller {
     static targets = ["frame", "chevron", "toggle"];
     static values = { foldersUrl: String, persistUrl: String, account: Number, active: Boolean };
 
-    connect() {
-        this._onOtherExpanded = this._handleOtherExpanded.bind(this);
-        window.addEventListener("settings--account-expand:opened", this._onOtherExpanded);
-    }
-
-    disconnect() {
-        window.removeEventListener("settings--account-expand:opened", this._onOtherExpanded);
-    }
-
     toggle() {
         if (this.frameTarget.classList.contains("hidden")) {
-            window.dispatchEvent(new CustomEvent("settings--account-expand:opened", {
-                detail: { element: this.element },
-            }));
-
             this._open();
-            this._remember(this.accountValue);
+            this._remember(true);
 
             return;
         }
 
         this._close();
-        this._remember(null);
+        this._remember(false);
     }
 
     stop(event) {
@@ -74,14 +62,8 @@ export default class extends Controller {
         }
     }
 
-    _handleOtherExpanded(event) {
-        if (event.detail.element !== this.element) {
-            this._close();
-        }
-    }
-
     /**
-     * Tell the server which account is open, so the next render already has
+     * Tell the server whether this account is open, so the next render already has
      * the folder list in it.
      *
      * Fire and forget, with keepalive: the click that expands an account is
@@ -90,7 +72,7 @@ export default class extends Controller {
      * interrupting anyone over — the list is open either way, it just will not
      * be next time.
      */
-    _remember(accountId) {
+    _remember(expanded) {
         if (false === this.hasPersistUrlValue) {
             return;
         }
@@ -98,7 +80,7 @@ export default class extends Controller {
         fetch(this.persistUrlValue, {
             method: "POST",
             headers: jsonCsrfHeaders(),
-            body: JSON.stringify({ account: accountId }),
+            body: JSON.stringify({ account: this.accountValue, expanded }),
             keepalive: true,
         }).catch(() => {});
     }

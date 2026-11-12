@@ -302,6 +302,7 @@ final readonly class ConfigBackupUsers
         User::SETTING_LOGS_SEEN_AT => 'a read marker against log rows, which do not travel',
         User::SETTING_WHATS_NEW_SEEN => 'a read marker like admin.logs_seen_at, against the release the source install ran: restored onto another version it would either hide notes this person has not read or repeat ones they have',
         User::SETTING_SIDEBAR_ACCOUNT => 'an account id from the source database — on the target that is nothing, or somebody else',
+        User::SETTING_SIDEBAR_ACCOUNTS => 'account ids from the source database — on the target those are nothing, or somebody else',
         User::SETTING_INSIGHT_PANE_DISMISSED_AT => 'a read marker like admin.logs_seen_at: it says when this person last waved the strip away, not what they chose',
     ];
 

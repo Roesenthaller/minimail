@@ -743,6 +743,15 @@ class User extends UserEntityModel implements UserInterface, PasswordAuthenticat
     public const string SETTING_SIDEBAR_ACCOUNT = 'sidebar.expanded_account';
 
     /**
+     * The accounts whose folder lists are expanded in the sidebar, as a list of
+     * account ids. Replaces SETTING_SIDEBAR_ACCOUNT, which could hold only one
+     * and so closed the first account when a second was opened. The old key is
+     * still read when this one has never been written, so an install that
+     * upgrades keeps what it had open.
+     */
+    public const string SETTING_SIDEBAR_ACCOUNTS = 'sidebar.expanded_accounts';
+
+    /**
      * The sidebar sections and label trees the user has collapsed, as a list of
      * keys — `section:labels`, `section:accounts`, `label:<full name>`.
      *
@@ -1661,15 +1670,26 @@ class User extends UserEntityModel implements UserInterface, PasswordAuthenticat
         }
     }
 
-    /** Virtual, out of the settings bag — see SETTING_SIDEBAR_ACCOUNT. */
-    public ?int $expandedAccountId {
+    /**
+     * Virtual, out of the settings bag — see SETTING_SIDEBAR_ACCOUNTS.
+     *
+     * @var list<int>
+     */
+    public array $expandedAccountIds {
         get {
-            $accountId = $this->getSetting(self::SETTING_SIDEBAR_ACCOUNT);
+            $ids = $this->getSetting(self::SETTING_SIDEBAR_ACCOUNTS);
 
-            return is_int($accountId) ? $accountId : null;
+            if (false === is_array($ids)) {
+                // Never written: fall back to the one account the old setting held.
+                $legacy = $this->getSetting(self::SETTING_SIDEBAR_ACCOUNT);
+
+                return is_int($legacy) ? [$legacy] : [];
+            }
+
+            return array_values(array_unique(array_filter($ids, 'is_int')));
         }
-        set (?int $accountId) {
-            $this->setSetting(self::SETTING_SIDEBAR_ACCOUNT, $accountId);
+        set (array $ids) {
+            $this->setSetting(self::SETTING_SIDEBAR_ACCOUNTS, array_values(array_unique(array_filter($ids, 'is_int'))));
         }
     }
 
