@@ -589,7 +589,7 @@ be a worse regression than the one this feature fixes.
                of their own underneath. #}
             <div class="min-w-0 flex-1 flex flex-col row-band:contents">
                 <div class="min-w-0 flex flex-col row-band:contents row-line:flex-row row-line:items-baseline row-line:gap-2">
-                    <span data-row-subject class="truncate text-sm mt-1 row-band:mt-0 row-line:mt-0 row-line:flex-shrink-0 row-line:max-w-[45%]
+                    <span data-row-subject class="truncate text-sm mt-1 row-band:mt-0 row-line:mt-0
                                  {{ unread ? 'font-semibold text-ink' : 'font-normal text-ink-soft' }}">
                         {# An encrypted message: a lock in front of its subject.
                            It used to be said by the preview, which read
@@ -619,7 +619,8 @@ be a worse regression than the one this feature fixes.
                        the same margin so the dot stays level with it. #}
                     {# Two lines: the whole second row, under the sender as
                        well as the subject. The grid's row gap is the air. #}
-                    <span class="min-w-0 flex-1 flex items-center gap-1.5 text-sm mt-1.5 row-band:mt-0 row-band:col-span-2 row-line:mt-0">
+                    {# One line: this wrapper is `contents` unless the row is a scheduled draft, so the preview and the attachment chips become items of the row itself. The subject then keeps its whole width and the preview takes what is left, with the chips pinned at the right edge; the subject is only cut where it would meet the chips, rather than at a fixed share of the row. #}
+                    <span class="min-w-0 flex-1 flex items-center gap-1.5 text-sm mt-1.5 row-band:mt-0 row-band:col-span-2 row-line:mt-0 {{ scheduledAt is null ? 'row-line:contents' : '' }}">
                         {# A draft with a send time on it. Without this the
                            Drafts list is the one place a scheduled message
                            lives and the only place that does not say so — the
@@ -725,7 +726,7 @@ be a worse regression than the one this feature fixes.
                            `truncate` stays for the one-line default, and
                            app.css releases its white-space only when the
                            setting asks for two. #}
-                        <span data-row-snippet class="truncate text-ink-faint {{ scheduledAt is not null ? 'hidden @xl:inline-block' : '' }}">{{ snippet }}</span>
+                        <span data-row-snippet class="truncate min-w-0 flex-1 text-ink-faint {{ scheduledAt is not null ? 'hidden @xl:inline-block' : '' }}">{{ snippet }}</span>
 
                         {# The files in the conversation, after the preview and
                            out of its way: the snippet is the item that gives
