@@ -103,7 +103,14 @@ export default class extends Controller {
             )
             : await this._post(
                 "/status/bulk/label",
-                { ids: targets.map((target) => target.id), labelId: labelId, attach: attach },
+                {
+                    ids: targets.map((target) => target.id),
+                    labelId: labelId,
+                    attach: attach,
+                    // Which list the ids came from, so the server can tell a
+                    // conversation's id from an email's (the Messages lists).
+                    scope: (document.getElementById("inbox-list-frame")?.dataset.syncScope ?? "").trim(),
+                },
             );
 
         // The tick below stays as it was instead of promising a change that

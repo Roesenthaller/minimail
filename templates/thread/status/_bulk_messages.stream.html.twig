@@ -1,0 +1,25 @@
+{#
+The answer to a bulk action from the Messages lists: each email's row, by its
+message id. The row ids there are `thread_{message id}` (see _thread_row), which
+is why this is not _bulk.stream.html.twig, whose rows are conversations.
+
+Variables:
+  count     how many emails were acted on
+  messages  the emails
+  leaves    true when the action takes them out of this list (archive, delete,
+            restore) rather than changing them in place (read)
+#}
+<!-- plmail-bulk: {{ count }} -->
+
+{% for message in messages %}
+    {% if leaves %}
+        <turbo-stream action="remove" target="thread_{{ message.id }}">
+        </turbo-stream>
+    {% else %}
+        <turbo-stream action="replace" target="thread_{{ message.id }}">
+            <template>
+                {% include '_partials/_thread_row.html.twig' with { message: message, sent_scope: message.receivedAt is null and message.sentAt is not null } only %}
+            </template>
+        </turbo-stream>
+    {% endif %}
+{% endfor %}

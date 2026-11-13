@@ -95,6 +95,7 @@ final class BulkStatusController extends AbstractController
         private readonly MailPlacement           $placement,
         private readonly InboxTabs               $inboxTabs,
         private readonly InboxCategoryRepository $inboxCategories,
+        private readonly \App\Repository\Mail\MessageRepository $messageRepository,
     ) {
     }
 
@@ -133,6 +134,14 @@ final class BulkStatusController extends AbstractController
 
         $body = json_decode($request->getContent(), true);
         $body = is_array($body) ? $body : [];
+
+        // The flat Messages lists, where a row is one email and its id is a
+        // MESSAGE id. Everything below reads ids as conversation ids, so a
+        // selection from here has to be answered before it gets there:
+        // otherwise email 812 would act on conversation 812.
+        if ('messages' === (string) ($body['scope'] ?? '')) {
+            return $this->bulkMessages($action, $body);
+        }
 
         // Started from All Mail (LabelRole::AllMail): archived or snoozed, a
         // conversation is still in that list, so its row is redrawn rather
@@ -567,6 +576,47 @@ final class BulkStatusController extends AbstractController
             'undoToast' => 'toast.archived',
         ]);
     }
+    /**
+     * Archive, delete, restore and mark read for a selection of single emails,
+     * from the Messages lists. Only those four: the rest (move, label, snooze,
+     * star, category) are conversation-level and have no meaning for one email
+     * picked out of a thread, and "everything in this view" is refused because a
+     * view of emails has no worker to run it.
+     *
+     * @param array<string, mixed> $body
+     */
+    private function bulkMessages(string $action, array $body): Response
+    {
+        if (false === in_array($action, ['archive', 'trash', 'restore', 'read'], true) || true === ($body['all'] ?? false)) {
+            throw $this->createAccessDeniedException('That action is not available for a selection in the Messages list.');
+        }
+
+        $ids      = array_map(intval(...), (array) ($body['ids'] ?? []));
+        $messages = [] === $ids ? [] : $this->messageRepository->findBy(['id' => $ids]);
+
+        $byAccount = [];
+
+        foreach ($messages as $message) {
+            $this->denyAccessUnlessGranted(OwnershipVoter::OWN, $message);
+            $byAccount[(int) $message->account?->id][] = $message;
+        }
+
+        foreach ($byAccount as $group) {
+            match ($action) {
+                'archive' => $this->status->archive($group),
+                'trash'   => $this->status->trash($group),
+                'restore' => $this->status->restore($group),
+                'read'    => $this->status->markRead($group, true === ($body['read'] ?? true)),
+            };
+        }
+
+        return $this->renderTurboStream('thread/status/_bulk_messages.stream.html.twig', [
+            'count'    => count($messages),
+            'messages' => $messages,
+            'leaves'   => 'read' !== $action,
+        ]);
+    }
+
     /**
      * Hand a whole-view action to a worker and say so.
      *
