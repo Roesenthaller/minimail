@@ -134,7 +134,7 @@ final class ThreadRows implements ResetInterface
             // Not gated on hasAttachments: mail sent from here may never have had
             // the flag set, and one query for the page costs less than a row
             // that hides its own files.
-            if (null !== $message->id && false === $message->isDraft) {
+            if (null !== $message->id && false === $message->isDraft()) {
                 $ids[] = $message->id;
             }
         }
@@ -317,7 +317,7 @@ final class ThreadRows implements ResetInterface
 
         foreach ($byThread as $threadId => $messages) {
             foreach ($messages as $message) {
-                if (true === $message->hasAttachments && false === $message->isDraft) {
+                if (true === $message->hasAttachments && false === $message->isDraft()) {
                     $withFiles[$threadId] = $threadId;
                 }
             }
@@ -371,7 +371,7 @@ final class ThreadRows implements ResetInterface
         $ids = [];
 
         foreach ($messages as $message) {
-            if (null !== $message->id && false === $message->isDraft) {
+            if (null !== $message->id && false === $message->isDraft()) {
                 $ids[] = $message->id;
             }
         }

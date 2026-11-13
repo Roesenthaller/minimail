@@ -2572,6 +2572,9 @@ message:
             title: '此邮件位于垃圾邮件中'
 messages:
     empty: '暂无邮件。'
+    filter:
+        all: '全部'
+        unread: '未读'
     heading: '邮件'
     heading_sent: '已发邮件'
     hint: '每封收到的邮件各占一行，最新的在前，不按会话分组。'

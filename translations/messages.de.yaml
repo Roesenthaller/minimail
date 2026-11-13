@@ -2894,6 +2894,9 @@ message:
 
 messages:
     empty: 'Noch keine Nachrichten.'
+    filter:
+        all: 'Alle'
+        unread: 'Ungelesen'
     heading: 'Nachrichten'
     heading_sent: 'Gesendete Nachrichten'
     hint: 'Jede eingegangene E-Mail als eigene Zeile, neueste zuerst. Keine Unterhaltungen.'

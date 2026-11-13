@@ -2772,6 +2772,9 @@ message:
 
 messages:
     empty: 'No letters yet.'
+    filter:
+        all: 'All'
+        unread: 'Unread'
     heading: 'Letters'
     heading_sent: 'Sent letters'
     hint: 'Every letter that has come aboard, one line each, newest first. No parleys.'

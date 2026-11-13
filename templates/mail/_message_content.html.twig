@@ -20,7 +20,12 @@
 </div>
 </div>{# /toolbar #}
 
-<div class="flex-1 overflow-y-auto">
+<div class="flex-1 overflow-y-auto"
+     data-controller="mail--thread-read"
+     data-mail--thread-read-mark-url-value="{{ path('app_status_mark_read', {'type': 'message', 'id': message.id}) }}"
+     data-mail--thread-read-id-value="{{ message.id }}"
+     data-mail--thread-read-delay-value="0"
+     data-mail--thread-read-was-unread-value="{{ message.seenAt is null ? 'true' : 'false' }}">
     {# The same division the conversation view makes: the bar above holds still
        and the mail arrives. This pane is swapped in wholesale by
        mail--mail-pane#_loadMessage every time a row is opened, so the fade is

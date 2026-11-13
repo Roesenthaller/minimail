@@ -2908,6 +2908,9 @@ message:
 
 messages:
     empty: 'No messages yet.'
+    filter:
+        all: 'All'
+        unread: 'Unread'
     heading: 'Messages'
     heading_sent: 'Sent messages'
     hint: 'Every email that has arrived, one row each, newest first. No conversations.'

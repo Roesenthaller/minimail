@@ -10,6 +10,22 @@
     <div class="px-4 py-2.5 border-b border-line">
         <h2 class="text-sm font-semibold text-ink-soft">{{ (sent|default(false) ? 'messages.heading_sent' : 'messages.heading')|trans }}{% if account is not null %} <span class="font-normal text-ink-faint">{{ account.email|default(account.name|default('')) }}</span>{% endif %}</h2>
         <p class="text-[11px] text-ink-faint mt-0.5">{{ (sent|default(false) ? 'messages.hint_sent' : 'messages.hint')|trans }}</p>
+
+        {# All or Unread: the same list with and without `unread`, so the sort
+           and the account are kept and the page is not. #}
+        {% set listRoute  = app.request.attributes.get('_route') %}
+        {% set listParams = app.request.attributes.get('_route_params')|default({}) %}
+        {% set keep = app.request.query.all|filter((v, k) => k in ['sort']) %}
+        <div class="mt-2 inline-flex rounded-pane border border-line overflow-hidden text-[11px]" role="group">
+            <a href="{{ path(listRoute, listParams|merge(keep)) }}"
+               data-turbo-frame="_top"
+               aria-current="{{ unread_only|default(false) ? 'false' : 'true' }}"
+               class="px-3 py-1 {{ unread_only|default(false) ? 'text-ink-muted hover:bg-hover' : 'bg-accent text-accent-ink' }}">{{ 'messages.filter.all'|trans }}</a>
+            <a href="{{ path(listRoute, listParams|merge(keep)|merge({ unread: 1 })) }}"
+               data-turbo-frame="_top"
+               aria-current="{{ unread_only|default(false) ? 'true' : 'false' }}"
+               class="px-3 py-1 {{ unread_only|default(false) ? 'bg-accent text-accent-ink' : 'text-ink-muted hover:bg-hover' }}">{{ 'messages.filter.unread'|trans }}</a>
+        </div>
     </div>
 {% endblock %}
 

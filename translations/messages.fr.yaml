@@ -2925,6 +2925,9 @@ message:
 
 messages:
     empty: 'Aucun message pour l’instant.'
+    filter:
+        all: 'Tous'
+        unread: 'Non lus'
     heading: 'Messages'
     heading_sent: 'Messages envoyés'
     hint: 'Chaque e-mail reçu sur sa propre ligne, le plus récent en premier. Sans conversations.'
